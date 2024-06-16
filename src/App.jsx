@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Box, Container } from "@mui/material";
@@ -7,6 +6,8 @@ import ImageSlider from "./components/ImageSlider";
 import PopularExercises from "./components/PopularExercises";
 import Footer from "./components/Footer";
 import AboutUs from "./AboutUs";
+import Learn from "./Learn";
+import ExerciseDetail from "./ExerciseDetail";
 import "./styles/app.css";
 
 function App() {
@@ -17,7 +18,6 @@ function App() {
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        backgroundColor: "white",
       }}
     >
       <NavBar />
@@ -35,6 +35,8 @@ function App() {
             }
           />
           <Route path="/about" element={<AboutUs />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/learn/:name" element={<ExerciseDetail />} />
         </Routes>
       </Box>
       <Footer />

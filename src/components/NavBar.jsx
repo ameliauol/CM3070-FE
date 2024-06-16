@@ -39,13 +39,15 @@ const NavBar = () => {
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-            My MUI App
+            Strength Matrix
           </Link>
         </Typography>
         <Button color="inherit" component={Link} to="/">
           HOME
         </Button>
-        <Button color="inherit">LEARN</Button>
+        <Button color="inherit" component={Link} to="/learn">
+          LEARN
+        </Button>
         <Button color="inherit">PROGRAMMES</Button>
         <Button color="inherit" component={Link} to="/about">
           ABOUT US
