@@ -1,4 +1,4 @@
-// src/AboutUs.jsx
+// src/AboutUsPage.jsx
 import React from "react";
 import { Box, Container, Grid, Typography } from "@mui/material";
 
@@ -23,7 +23,7 @@ const aboutSections = [
   },
 ];
 
-const AboutUs = () => {
+const AboutUsPage = () => {
   return (
     <Container sx={{ my: 4 }}>
       {aboutSections.map((section, index) => (
@@ -60,4 +60,4 @@ const AboutUs = () => {
   );
 };
 
-export default AboutUs;
+export default AboutUsPage;

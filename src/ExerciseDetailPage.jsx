@@ -55,7 +55,7 @@ const exercises = [
   },
 ];
 
-const ExerciseDetail = () => {
+const ExerciseDetailPage = () => {
   const { name } = useParams();
   const exercise = exercises.find(
     (ex) => ex.name.toLowerCase() === name.toLowerCase()
@@ -100,4 +100,4 @@ const ExerciseDetail = () => {
   );
 };
 
-export default ExerciseDetail;
+export default ExerciseDetailPage;

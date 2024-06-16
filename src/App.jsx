@@ -5,16 +5,16 @@ import NavBar from "./components/NavBar";
 import ImageSlider from "./components/ImageSlider";
 import PopularExercises from "./components/PopularExercises";
 import Footer from "./components/Footer";
-import AboutUs from "./AboutUs";
-import Learn from "./Learn";
-import ExerciseDetail from "./ExerciseDetail";
-import "./styles/app.css";
+import AboutUsPage from "./AboutUsPage";
+import LearnPage from "./LearnPage";
+import ExerciseDetailPage from "./ExerciseDetailPage";
+import ProgrammesPage from "./ProgrammesPage";
+import ProgrammeDetailPage from "./ProgrammeDetailPage";
 
 function App() {
   return (
     <Box
       sx={{
-        flexGrow: 1,
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
@@ -34,9 +34,11 @@ function App() {
               </>
             }
           />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/learn" element={<Learn />} />
-          <Route path="/learn/:name" element={<ExerciseDetail />} />
+          <Route path="/about" element={<AboutUsPage />} />
+          <Route path="/learn" element={<LearnPage />} />
+          <Route path="/learn/:name" element={<ExerciseDetailPage />} />
+          <Route path="/programmes" element={<ProgrammesPage />} />
+          <Route path="/programme/:id" element={<ProgrammeDetailPage />} />
         </Routes>
       </Box>
       <Footer />

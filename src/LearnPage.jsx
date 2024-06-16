@@ -37,7 +37,7 @@ const exercises = [
   },
 ];
 
-const Learn = () => {
+const LearnPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearchChange = (event) => {
@@ -101,4 +101,4 @@ const Learn = () => {
   );
 };
 
-export default Learn;
+export default LearnPage;
