@@ -1,16 +1,8 @@
-# CM3070
-My Final Project after 3 years in UOL.
+# React + Vite
 
-# Strength Matrix - A Comprehensive Weightlifting Application.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Key Features
-1. fsef
-2. fsef
-3. sefsef
-4. sefef
-5. sefsef
-6. sefsef
-7. sefsef
-8. sefsef
-9. sef
-10. sf
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
