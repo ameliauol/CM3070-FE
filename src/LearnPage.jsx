@@ -12,7 +12,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const exercises = [
   {
@@ -79,26 +79,21 @@ const LearnPage = () => {
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ borderRadius: "16px", boxShadow: 3 }}>
               <CardActionArea onClick={() => handleExerciseClick(exercise)}>
-                <Link
-                  to={`/learn/${exercise.name.toLowerCase()}`}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={exercise.imageUrl}
-                    alt={exercise.name}
-                    sx={{
-                      borderTopLeftRadius: "16px",
-                      borderTopRightRadius: "16px",
-                    }}
-                  />
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      {exercise.name}
-                    </Typography>
-                  </CardContent>
-                </Link>
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={exercise.imageUrl}
+                  alt={exercise.name}
+                  sx={{
+                    borderTopLeftRadius: "16px",
+                    borderTopRightRadius: "16px",
+                  }}
+                />
+                <CardContent>
+                  <Typography variant="h6" component="div">
+                    {exercise.name}
+                  </Typography>
+                </CardContent>
               </CardActionArea>
             </Card>
           </Grid>

@@ -1,4 +1,3 @@
-// src/Navbar.jsx
 import React, { useState } from "react";
 import {
   AppBar,
@@ -10,11 +9,12 @@ import {
   Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const NavBar = () => {
+  const { loggedIn, username, logout } = useAuth();
+
   const [anchorEl, setAnchorEl] = useState(null);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [username, setUsername] = useState("John Doe");
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -24,13 +24,8 @@ const NavBar = () => {
     setAnchorEl(null);
   };
 
-  const handleLogin = () => {
-    setLoggedIn(true);
-    setAnchorEl(null);
-  };
-
   const handleLogout = () => {
-    setLoggedIn(false);
+    logout();
     setAnchorEl(null);
   };
 
@@ -68,7 +63,7 @@ const NavBar = () => {
             </Menu>
           </Box>
         ) : (
-          <Button color="inherit" onClick={handleLogin}>
+          <Button color="inherit" component={Link} to="/login">
             LOGIN
           </Button>
         )}

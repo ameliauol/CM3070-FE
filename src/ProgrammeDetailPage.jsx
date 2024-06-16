@@ -118,7 +118,6 @@ const ProgrammeDetailPage = () => {
                     <Typography variant="h6" component="div">
                       {exercise.name}
                     </Typography>
-                    {/* Add more details about the exercise as needed */}
                   </CardContent>
                 </Link>
               </Card>

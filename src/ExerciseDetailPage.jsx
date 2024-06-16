@@ -17,7 +17,6 @@ import {
   Grid,
 } from "@mui/material";
 
-// Mock data for exercises and past weights (replace with actual API fetch logic later)
 const exercises = [
   {
     name: "Push-Up",
@@ -74,28 +73,44 @@ const exercises = [
 const ExerciseDetailPage = () => {
   const { name } = useParams();
   const location = useLocation();
-  const [exercise, setExercise] = useState(null);
+  const [exercise, setExercise] = useState({
+    name: "",
+    videoUrl: "",
+    instructions: [],
+    currentWeight: null,
+    goalWeight: null,
+  });
 
-  // Mock data for past weights (replace with actual API fetch logic later)
   const pastWeights = [
     { date: "2023-01-15", weight: 50 },
     { date: "2023-02-01", weight: 55 },
     { date: "2023-02-15", weight: 60 },
   ];
 
-  // Fetch the exercise from location state or from exercises array if not found
   useEffect(() => {
-    const exerciseFromLocation = location.state?.exercise;
-    if (exerciseFromLocation) {
-      setExercise(exerciseFromLocation);
-    } else {
-      const foundExercise = exercises.find(
-        (ex) => ex.name.toLowerCase() === name.toLowerCase()
-      );
-      if (foundExercise) {
-        setExercise(foundExercise);
+    const fetchExercise = async () => {
+      try {
+        const exerciseFromLocation = location.state?.exercise;
+        if (exerciseFromLocation) {
+          setExercise(exerciseFromLocation);
+        } else {
+          const foundExercise = exercises.find(
+            (ex) => ex.name.toLowerCase() === name.toLowerCase()
+          );
+          if (foundExercise) {
+            setExercise(foundExercise);
+          } else {
+            // Exercise not found handling
+            console.log("Exercise not found");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching exercise:", error);
+        // Handle error state or fallback
       }
-    }
+    };
+
+    fetchExercise();
   }, [name, location.state]);
 
   if (!exercise) {
@@ -127,13 +142,15 @@ const ExerciseDetailPage = () => {
       <Typography variant="h5" component="h2" gutterBottom>
         Instructions
       </Typography>
-      <ol>
-        {exercise.instructions.map((currInstr, index) => (
-          <li key={index} style={{ marginBottom: "8px" }}>
-            <Typography variant="body1">{currInstr}</Typography>
-          </li>
-        ))}
-      </ol>
+      {exercise.instructions && (
+        <ol>
+          {exercise.instructions.map((currInstr, index) => (
+            <li key={index} style={{ marginBottom: "8px" }}>
+              <Typography variant="body1">{currInstr}</Typography>
+            </li>
+          ))}
+        </ol>
+      )}
       <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
           <Box sx={{ mt: 4 }}>
