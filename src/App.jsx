@@ -1,64 +1,43 @@
+// src/App.jsx
 import React from "react";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Container,
-  Grid,
-  Paper,
-  Box,
-} from "@mui/material";
+import { Routes, Route } from "react-router-dom";
+import { Box, Container } from "@mui/material";
+import NavBar from "./components/NavBar";
+import ImageSlider from "./components/ImageSlider";
+import PopularExercises from "./components/PopularExercises";
+import Footer from "./components/Footer";
+import AboutUs from "./AboutUs";
+import "./styles/app.css";
 
 function App() {
   return (
     <Box
       sx={{
         flexGrow: 1,
-        height: "100vh",
         display: "flex",
         flexDirection: "column",
+        minHeight: "100vh",
+        backgroundColor: "white",
       }}
     >
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            My MUI App
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-      <Container className="app-container">
-        <Typography variant="h4" className="app-title">
-          Welcome to My MUI App!
-        </Typography>
-        <Grid container spacing={3} className="app-grid">
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper elevation={3} className="app-paper">
-              <Typography variant="h6">Content Block 1</Typography>
-              <Typography variant="body1">
-                This is a sample content block for larger screens.
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper elevation={3} className="app-paper">
-              <Typography variant="h6">Content Block 2</Typography>
-              <Typography variant="body1">
-                Another block of content goes here.
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper elevation={3} className="app-paper">
-              <Typography variant="h6">Content Block 3</Typography>
-              <Typography variant="body1">
-                More content can be added here.
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
+      <NavBar />
+      <Box sx={{ flexGrow: 1 }}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <ImageSlider />
+                <Container sx={{ mt: 4 }}>
+                  <PopularExercises />
+                </Container>
+              </>
+            }
+          />
+          <Route path="/about" element={<AboutUs />} />
+        </Routes>
+      </Box>
+      <Footer />
     </Box>
   );
 }

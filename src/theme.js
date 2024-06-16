@@ -15,6 +15,7 @@ const theme = createTheme({
     },
     body1: {
       fontSize: "1.1rem",
+      color: "black",
     },
   },
 });
