@@ -126,7 +126,7 @@ const ProgrammesPage = () => {
                 <CardMedia
                   component="img"
                   height="200"
-                  image={programme.exercises[0].imageUrl} {/* Use first exercise image for simplicity */}
+                  image={programme.exercises[0].imageUrl}
                   alt={programme.title}
                 />
                 <CardContent>

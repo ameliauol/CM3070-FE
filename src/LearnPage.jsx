@@ -12,7 +12,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const exercises = [
   {
@@ -39,6 +39,7 @@ const exercises = [
 
 const LearnPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -47,6 +48,10 @@ const LearnPage = () => {
   const filteredExercises = exercises.filter((exercise) =>
     exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleExerciseClick = (exercise) => {
+    navigate(`/learn/${exercise.name.toLowerCase()}`, { state: { exercise } });
+  };
 
   return (
     <Container sx={{ my: 4 }}>
@@ -73,25 +78,27 @@ const LearnPage = () => {
         {filteredExercises.map((exercise, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card sx={{ borderRadius: "16px", boxShadow: 3 }}>
-              <CardActionArea
-                component={Link}
-                to={`/learn/${exercise.name.toLowerCase()}`}
-              >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={exercise.imageUrl}
-                  alt={exercise.name}
-                  sx={{
-                    borderTopLeftRadius: "16px",
-                    borderTopRightRadius: "16px",
-                  }}
-                />
-                <CardContent>
-                  <Typography variant="h6" component="div">
-                    {exercise.name}
-                  </Typography>
-                </CardContent>
+              <CardActionArea onClick={() => handleExerciseClick(exercise)}>
+                <Link
+                  to={`/learn/${exercise.name.toLowerCase()}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={exercise.imageUrl}
+                    alt={exercise.name}
+                    sx={{
+                      borderTopLeftRadius: "16px",
+                      borderTopRightRadius: "16px",
+                    }}
+                  />
+                  <CardContent>
+                    <Typography variant="h6" component="div">
+                      {exercise.name}
+                    </Typography>
+                  </CardContent>
+                </Link>
               </CardActionArea>
             </Card>
           </Grid>

@@ -1,7 +1,23 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { Box, Container, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
+import {
+  Box,
+  Container,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid,
+} from "@mui/material";
 
+// Mock data for exercises and past weights (replace with actual API fetch logic later)
 const exercises = [
   {
     name: "Push-Up",
@@ -57,15 +73,38 @@ const exercises = [
 
 const ExerciseDetailPage = () => {
   const { name } = useParams();
-  const exercise = exercises.find(
-    (ex) => ex.name.toLowerCase() === name.toLowerCase()
-  );
+  const location = useLocation();
+  const [exercise, setExercise] = useState(null);
+
+  // Mock data for past weights (replace with actual API fetch logic later)
+  const pastWeights = [
+    { date: "2023-01-15", weight: 50 },
+    { date: "2023-02-01", weight: 55 },
+    { date: "2023-02-15", weight: 60 },
+  ];
+
+  // Fetch the exercise from location state or from exercises array if not found
+  useEffect(() => {
+    const exerciseFromLocation = location.state?.exercise;
+    if (exerciseFromLocation) {
+      setExercise(exerciseFromLocation);
+    } else {
+      const foundExercise = exercises.find(
+        (ex) => ex.name.toLowerCase() === name.toLowerCase()
+      );
+      if (foundExercise) {
+        setExercise(foundExercise);
+      }
+    }
+  }, [name, location.state]);
 
   if (!exercise) {
     return (
-      <Typography variant="h4" component="h2" sx={{ mt: 4 }}>
-        Exercise not found
-      </Typography>
+      <Container>
+        <Typography variant="h4" component="h2" sx={{ mt: 4 }}>
+          Exercise not found
+        </Typography>
+      </Container>
     );
   }
 
@@ -80,7 +119,6 @@ const ExerciseDetailPage = () => {
           height="500"
           src={exercise.videoUrl}
           title={exercise.name}
-          frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           style={{ borderRadius: "8px" }}
@@ -90,12 +128,62 @@ const ExerciseDetailPage = () => {
         Instructions
       </Typography>
       <ol>
-        {exercise.instructions.map((instruction, index) => (
+        {exercise.instructions.map((currInstr, index) => (
           <li key={index} style={{ marginBottom: "8px" }}>
-            <Typography variant="body1">{instruction}</Typography>
+            <Typography variant="body1">{currInstr}</Typography>
           </li>
         ))}
       </ol>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={6}>
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h5" component="h2" gutterBottom>
+              Past Lift Weights
+            </Typography>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell align="right">Weight (lbs)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {pastWeights.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell component="th" scope="row">
+                        {item.date}
+                      </TableCell>
+                      <TableCell align="right">{item.weight}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h5" component="h2" gutterBottom>
+              Goal and Current Weight
+            </Typography>
+            <List>
+              <ListItem>
+                <ListItemText
+                  primary="Current Weight (lbs)"
+                  secondary={exercise.currentWeight || "N/A"}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
+                  primary="Goal Weight (lbs)"
+                  secondary={exercise.goalWeight || "N/A"}
+                />
+              </ListItem>
+            </List>
+          </Box>
+        </Grid>
+      </Grid>
     </Container>
   );
 };
