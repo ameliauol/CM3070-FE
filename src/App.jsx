@@ -1,8 +1,8 @@
-// src/App.jsx
 import React, { useState } from "react";
 import Modal from "./components/Modal";
 import LoginForm from "./components/Forms/LoginForm";
 import RegistrationForm from "./components/Forms/RegistrationForm";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,15 +20,14 @@ const App = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      <button onClick={() => handleOpenModal("login")}>Login</button>
+      <Navbar />\<button onClick={() => handleOpenModal("login")}>Login</button>
       <button onClick={() => handleOpenModal("register")}>Register</button>
-
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={modalContent === "login" ? "Log In" : "Sign Up"}
       >
-        {modalContent === "login" && <LoginForm />}
+        {modalContent === "login" && <LoginForm />}{" "}
         {modalContent === "register" && <RegistrationForm />}
       </Modal>
     </div>
