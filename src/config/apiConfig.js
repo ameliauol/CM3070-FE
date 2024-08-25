@@ -1,6 +1,6 @@
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
-
+const API_BASE_URL = "https://cm3070-be.onrender.com";
+// TODO: Fix this to use the environment variable
+//   process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
 const API_ENDPOINTS = {
   USERS: {
     REGISTER: "/users/register",

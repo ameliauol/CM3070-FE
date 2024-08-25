@@ -1,63 +1,38 @@
-// App.jsx
+// src/App.jsx
+import React, { useState } from "react";
+import Modal from "./components/Modal";
+import LoginForm from "./components/Forms/LoginForm";
+import RegistrationForm from "./components/Forms/RegistrationForm";
 
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Box, Container } from "@mui/material";
-import NavBar from "./components/Navbar/NavBar";
-import ImageSlider from "./components/ImageSlider";
-import PopularExercises from "./components/PopularExercises";
-import Footer from "./components/Footer/Footer";
-import AboutUsPage from "./pages/AboutUsPage";
-import LearnPage from "./pages/LearnPage";
-import ExerciseDetailPage from "./pages/ExerciseDetailPage";
-import ProgrammesPage from "./pages/ProgrammesPage";
-import ProgrammeDetailPage from "./pages/ProgrammeDetailPage";
-import LoginPage from "./AuthScreens/LoginPage";
-import RegisterPage from "./AuthScreens/RegisterPage";
-import { AuthProvider } from "./context/AuthContext";
+const App = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
 
-function App() {
+  const handleOpenModal = (content) => {
+    setModalContent(content);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalContent(null); // Reset modalContent when closing
+  };
+
   return (
-    <AuthProvider>
-      {" "}
-      {/* Wrap your entire app with AuthProvider */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-        }}
+    <div className="bg-gray-900 text-white min-h-screen">
+      <button onClick={() => handleOpenModal("login")}>Login</button>
+      <button onClick={() => handleOpenModal("register")}>Register</button>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={modalContent === "login" ? "Log In" : "Sign Up"}
       >
-        <NavBar />
-        <Box sx={{ flexGrow: 1 }}>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <ImageSlider />
-                  <Container sx={{ mt: 4 }}>
-                    <PopularExercises />
-                  </Container>
-                </>
-              }
-            />
-            <Route path="/about" element={<AboutUsPage />} />
-            <Route path="/learn" element={<LearnPage />} />
-            <Route path="/learn/:name" element={<ExerciseDetailPage />} />
-            <Route path="/programmes" element={<ProgrammesPage />} />
-            <Route path="/programme/:id" element={<ProgrammeDetailPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            {/* <PrivateRoute path="/user/profile" element={<UserProfilePage />} /> */}
-            {/* Redirect to home if route not found */}
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </Box>
-        <Footer />
-      </Box>
-    </AuthProvider>
+        {modalContent === "login" && <LoginForm />}
+        {modalContent === "register" && <RegistrationForm />}
+      </Modal>
+    </div>
   );
-}
+};
 
 export default App;
