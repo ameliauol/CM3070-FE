@@ -9,7 +9,7 @@ import {
   Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const NavBar = () => {
   const { loggedIn, username, logout } = useAuth();
