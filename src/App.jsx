@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Modal from "./components/Modal";
 import LoginForm from "./components/Forms/LoginForm";
 import RegistrationForm from "./components/Forms/RegistrationForm";
@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ExerciseListingPage from "./pages/ExerciseListingPage";
+import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 
 const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,6 +31,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/exercises" element={<ExerciseListingPage />} />
+          <Route
+            path="/exercise/:exerciseName"
+            element={<ExerciseDetailPage />}
+          />
         </Routes>
         <div className="container mx-auto p-4">
           <Modal

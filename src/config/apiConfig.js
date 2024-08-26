@@ -5,7 +5,6 @@ const API_ENDPOINTS = {
   USERS: {
     REGISTER: "/users/register",
     LOGIN: "/users/login",
-    GET_ALL: "/users/get/all",
     GET_BY_USERNAME: "/users/get",
     UPDATE: "/users/update",
     DELETE: "/users/delete",
@@ -18,8 +17,8 @@ const API_ENDPOINTS = {
     GET_ALL: "/exercises/get/all",
   },
   EXERCISE_INSTRUCTIONS: {
-    GET_ALL: "/exercise-instructions",
-    GET_BY_EXERCISE_ID: "/exercise-instructions/exercise",
+    GET_ALL: "/exercise/instructions/get/all",
+    GET_BY_EXERCISE_ID: "/exercise/instructions/get/id",
   },
   PROGRAMME_EXERCISES: {
     GET_BY_PROGRAMME_ID: "/programme-exercises/programme", // programme ID will be appended

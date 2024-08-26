@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ExerciseCard from "../components/Cards/ExerciseCard";
 import Snackbar from "../components/Snackbar";
+import { Link } from "react-router-dom";
 import exerciseService from "../services/exerciseService";
 
 const ExerciseListingPage = () => {
@@ -92,7 +93,9 @@ const ExerciseListingPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
               {filteredExercises.length > 0 ? (
                 filteredExercises.map((exercise) => (
-                  <ExerciseCard key={exercise.id} exercise={exercise} />
+                  <Link to={`/exercise/${exercise.name}`} state={{ exercise }}>
+                    <ExerciseCard key={exercise.id} exercise={exercise} />
+                  </Link>
                 ))
               ) : (
                 <p className="text-gray-400 text-center">
