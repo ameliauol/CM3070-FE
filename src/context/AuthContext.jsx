@@ -1,76 +1,48 @@
-import React, { createContext, useContext, useState } from "react";
-import axios from "axios";
+import React, { createContext, useState, useEffect } from "react";
+import authService from "../services/authService";
+
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-export const AuthProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  useEffect(() => {
+    const storedUser = authService.getCurrentUser();
+    if (storedUser) {
+      setUser(storedUser);
+    }
+    setIsLoading(false);
+  }, []);
 
-  const setLoggedInUser = (username, token) => {
-    setLoggedIn(true);
-    setUsername(username);
-    setToken(token);
-    localStorage.setItem("token", token);
+  const login = async (userData) => {
+    setIsLoading(true);
+    try {
+      const response = await authService.login(userData);
+      setUser(response); // Update user in context
+    } catch (error) {
+      console.error("Error logging in:", error);
+      // Handle login error
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
-    setLoggedIn(false);
-    setUsername("");
-    setToken("");
-    localStorage.removeItem("token");
+    authService.logout();
+    setUser(null); // Update user in context
   };
 
-  const register = async (username, email, password) => {
-    try {
-      // TODO: Replace with actual deployed API endpoint for registration
-      const response = await fetch("http://localhost:3000/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setLoggedInUser(username, data.token);
-        return { success: true };
-      } else {
-        return { error: data.message };
-      }
-    } catch (error) {
-      console.error("Error registering user:", error);
-      return {
-        error: "An error occurred while registering. Please try again later.",
-      };
-    }
-  };
-
-  const login = async (userData) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/auth/login",
-        userData
-      );
-      const { username, token } = response.data;
-      setLoggedInUser(username, token);
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
-
-  const authValues = {
-    loggedIn,
-    username,
-    token,
+  const contextValue = {
+    user,
+    isLoading,
     login,
     logout,
-    register,
   };
 
   return (
-    <AuthContext.Provider value={authValues}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
+
+export { AuthContext, AuthProvider };
