@@ -29,6 +29,7 @@ const App = () => {
       <div className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/exercises" element={<ExerciseListingPage />} />
         </Routes>
         <div className="container mx-auto p-4">
           <Modal

@@ -15,7 +15,7 @@ const API_ENDPOINTS = {
     GET_BY_ID: "/programmes",
   },
   EXERCISES: {
-    GET_ALL: "/exercises",
+    GET_ALL: "/exercises/get/all",
   },
   EXERCISE_INSTRUCTIONS: {
     GET_ALL: "/exercise-instructions",
