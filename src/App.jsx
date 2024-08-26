@@ -10,30 +10,38 @@ const App = () => {
   const [modalContent, setModalContent] = useState(null);
 
   const handleOpenModal = (content) => {
+    setIsModalOpen(false);
     setModalContent(content);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setModalContent(null); // Reset modalContent when closing
+    setModalContent(null);
   };
 
   return (
     <div className="flex flex-col bg-gray-900 text-white min-h-screen">
-      <Navbar />
+      <Navbar handleOpenModal={handleOpenModal} />
       <div className="flex-grow">
-        <button onClick={() => handleOpenModal("login")}>Login</button>
-        <button onClick={() => handleOpenModal("register")}>Register</button>
-
         <div className="container mx-auto p-4">
           <Modal
             isOpen={isModalOpen}
             onClose={handleCloseModal}
             title={modalContent === "login" ? "Log In" : "Sign Up"}
           >
-            {modalContent === "login" && <LoginForm />}
-            {modalContent === "register" && <RegistrationForm />}
+            {modalContent === "login" && (
+              <LoginForm
+                onLoginSuccess={handleCloseModal}
+                onSwitchToRegister={() => handleOpenModal("register")}
+              />
+            )}
+            {modalContent === "register" && (
+              <RegistrationForm
+                onRegisterSuccess={handleCloseModal}
+                onSwitchToLogin={() => handleOpenModal("login")}
+              />
+            )}
           </Modal>
         </div>
       </div>

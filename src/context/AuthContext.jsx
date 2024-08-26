@@ -22,7 +22,7 @@ const AuthProvider = ({ children }) => {
       setUser(response); // Update user in context
     } catch (error) {
       console.error("Error logging in:", error);
-      // Handle login error
+      return Promise.reject(error);
     } finally {
       setIsLoading(false);
     }
@@ -33,11 +33,25 @@ const AuthProvider = ({ children }) => {
     setUser(null); // Update user in context
   };
 
+  const register = async (userData) => {
+    setIsLoading(true);
+    try {
+      const response = await authService.register(userData);
+      console.log("Registration successful:", response);
+    } catch (error) {
+      console.error("Error registering:", error);
+      return Promise.reject(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const contextValue = {
     user,
     isLoading,
     login,
     logout,
+    register,
   };
 
   return (

@@ -1,7 +1,14 @@
-import React from "react";
+import { React, useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-const Navbar = () => {
+const Navbar = ({ handleOpenModal }) => {
+  const { user, logout } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <nav className="py-4 px-6">
       <div className="container flex items-center justify-between">
@@ -42,18 +49,27 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink
-                to="/profile"
-                className={({ isActive }) =>
-                  `text-gray-300 hover:text-white px-5 py-2 rounded-3xl
-                   ${isActive ? "bg-blue-500 text-white font-bold" : ""}`
-                }
-              >
-                Profile
-              </NavLink>
+              {user && (
+                <NavLink
+                  to="/profile"
+                  className={({ isActive }) =>
+                    `text-gray-300 hover:text-white px-3 py-2 rounded-3xl
+                 ${isActive ? "bg-blue-500 text-white font-bold" : ""}`
+                  }
+                >
+                  Profile
+                </NavLink>
+              )}
             </li>
           </ul>
         </div>
+        <button
+          onClick={() => (user ? handleLogout() : handleOpenModal("login"))}
+        >
+          <span className="text-gray-300 hover:text-white px-3 py-2 rounded-3xl">
+            {user ? "Logout" : "Log In"}
+          </span>
+        </button>
       </div>
     </nav>
   );

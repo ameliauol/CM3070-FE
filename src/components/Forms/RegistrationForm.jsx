@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import authService from "../../services/authService";
+import React, { useState, useContext } from "react";
 import Snackbar from "../Snackbar";
+import { AuthContext } from "../../context/AuthContext";
 
-const RegistrationForm = () => {
+const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin }) => {
+  const { register } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -55,29 +56,32 @@ const RegistrationForm = () => {
     }
 
     try {
-      const response = await authService.register({
-        name,
-        email,
-        username,
-        password,
-      });
-      console.log("Registration successful:", response);
-      // TODO: Handle success (e.g., redirect to login) - No snackbar for success
+      await register({ name, email, username, password });
+      console.log("Registration successful!");
+      setSnackbarMessage(
+        "Successfully registered! Redirecting to the login page now."
+      );
+      setSnackbarType("success");
+      setShowSnackbar(true);
+
+      onRegisterSuccess();
+      handleOpenModal("login");
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 10000);
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setSnackbarMessage(
-          "An account with this username or email already exists."
+          "An error has occurred: Account with this username or email already exists."
         );
         setSnackbarType("error");
         setShowSnackbar(true);
-        setError("An account with this username or email already exists.");
       } else {
         setSnackbarMessage(
-          error.message || "An error occurred during registration."
+          "An error occurred during registration, please try again later."
         );
         setSnackbarType("error");
         setShowSnackbar(true);
-        setError(error.message || "An error occurred during registration.");
       }
     }
   };
@@ -214,8 +218,18 @@ const RegistrationForm = () => {
             )}
           </div>
         </div>
-
-        <div className="md:flex md:items-center">
+        <div className="text-center mt-4">
+          <p className="text-gray-400 text-sm">
+            Already have an account?{" "}
+            <span
+              className="text-blue-500 hover:underline cursor-pointer"
+              onClick={onSwitchToLogin}
+            >
+              Login here
+            </span>
+          </p>
+        </div>
+        <div className="md:flex md:items-center mt-4">
           <div className="md:w-1/3"></div>
           <div className="md:w-2/3">
             <button
