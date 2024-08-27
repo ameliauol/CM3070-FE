@@ -14,7 +14,7 @@ const ExerciseCard = ({ exercise }) => {
 
       {/* Category Label */}
       {category && (
-        <div className="absolute top-4 right-4 bg-gray-900 bg-opacity-50 text-white px-2 py-1 rounded-md text-sm font-medium">
+        <div className="absolute top-4 right-4 bg-slate-900 bg-opacity-50 text-white px-2 py-1 rounded-md text-sm font-medium">
           {category}
         </div>
       )}
@@ -22,7 +22,7 @@ const ExerciseCard = ({ exercise }) => {
       {/* Content */}
       <div className="mt-4">
         <h4 className="text-lg font-medium text-white mb-2">{name}</h4>
-        <p className="text-gray-400 text-sm line-clamp-3">
+        <p className="text-gray-400 text-sm line-clamp-3 min-h-16">
           {" "}
           {/* Truncate description to 3 lines */}
           {description}

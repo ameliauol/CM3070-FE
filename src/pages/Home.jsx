@@ -15,7 +15,7 @@ const Home = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="bg-gray-900 text-white flex-grow">
+    <div className="bg-slate-900 text-white flex-grow">
       {/* Hero Section */}
       <section
         className="container mx-auto px-6 py-24 text-center bg-cover bg-center"

@@ -166,7 +166,7 @@ const ExerciseDetailPage = () => {
   }
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
+    <div className="bg-slate-900 text-white min-h-screen flex-grow p-4">
       {showSnackbar && <Snackbar message={snackbarMessage} type="error" />}
       <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-4">{exercise.name}</h1>
