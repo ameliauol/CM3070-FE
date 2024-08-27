@@ -10,7 +10,7 @@ const API_ENDPOINTS = {
     DELETE: "/users/delete",
   },
   PROGRAMMES: {
-    GET_ALL: "/programmes",
+    GET_ALL: "/programmes/get/all",
     GET_BY_ID: "/programmes",
   },
   EXERCISES: {
@@ -21,7 +21,7 @@ const API_ENDPOINTS = {
     GET_BY_EXERCISE_ID: "/exercise/instructions/get/id",
   },
   PROGRAMME_EXERCISES: {
-    GET_BY_PROGRAMME_ID: "/programme-exercises/programme", // programme ID will be appended
+    GET_BY_PROGRAMME_ID: "/programme/exercises/get/id", // programme ID will be appended
   },
   USER_PROGRAMMES: {
     GET_ALL: "/user-programmes",

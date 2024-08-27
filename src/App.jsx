@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ExerciseListingPage from "./pages/ExerciseListingPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
+import ProgrammesPage from "./pages/ProgrammesPage";
 
 const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,6 +36,7 @@ const App = () => {
             path="/exercise/:exerciseName"
             element={<ExerciseDetailPage />}
           />
+          <Route path="/programmes" element={<ProgrammesPage />} />
         </Routes>
         <div className="container mx-auto p-4">
           <Modal
