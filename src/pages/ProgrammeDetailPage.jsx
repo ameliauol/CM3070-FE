@@ -1,132 +1,68 @@
-import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Typography,
-  Box,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-} from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import programmeService from "../services/programmeService";
+import programmeExercisesService from "../services/programmeExercisesService";
 
-const ProgrammeDetailPage = () => {
-  const location = useLocation();
-  const [programme, setProgramme] = useState(location.state?.programme);
-  const [loading, setLoading] = useState(false);
+const ProgrammeDetailsPage = () => {
+  const { programmeId } = useParams();
+  const [programme, setProgramme] = useState(null);
+  const [exercises, setExercises] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!programme) {
-      setLoading(true);
-      setTimeout(() => {
-        const fetchedProgramme = fetchProgrammeFromAPI(
-          location.pathname.split("/").pop()
+    const fetchProgrammeDetails = async () => {
+      setIsLoading(true);
+      try {
+        const programmeData = await programmeService.getProgrammeById(
+          programmeId
         );
-        setProgramme(fetchedProgramme);
-        setLoading(false);
-      }, 1000);
-    }
-  }, [programme, location.pathname]);
-
-  const fetchProgrammeFromAPI = (programmeId) => {
-    const programmeData = {
-      id: programmeId,
-      title: "Full Body Workout",
-      isActive: true,
-      summary:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod magna a dolor tempor, vel mattis ante tempor.",
-      exercises: [
-        {
-          name: "Push-Up",
-          imageUrl:
-            "https://via.placeholder.com/300x200/008080/FFFFFF?text=Push-Up",
-        },
-        {
-          name: "Squat",
-          imageUrl:
-            "https://via.placeholder.com/300x200/FF6347/FFFFFF?text=Squat",
-        },
-        {
-          name: "Plank",
-          imageUrl:
-            "https://via.placeholder.com/300x200/4682B4/FFFFFF?text=Plank",
-        },
-      ],
+        setProgramme(programmeData);
+        const exercisesData =
+          await programmeExercisesService.getExercisesByProgrammeId(
+            programmeId
+          );
+        setExercises(exercisesData);
+      } catch (error) {
+        console.error("Error fetching programme details:", error);
+        setError("Error fetching programme details. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
     };
-    return programmeData;
-  };
 
-  if (loading) {
+    fetchProgrammeDetails();
+  }, [programmeId]); // Fetch details whenever programmeId changes
+
+  if (isLoading) {
+    return <div className="container mx-auto p-4 text-center">Loading...</div>;
+  }
+
+  if (error) {
     return (
-      <Container>
-        <Typography variant="h4" gutterBottom>
-          Loading Programme...
-        </Typography>
-      </Container>
+      <div className="container mx-auto p-4 text-center text-red-500">
+        {error}
+      </div>
     );
   }
 
   if (!programme) {
     return (
-      <Container>
-        <Typography variant="h4" gutterBottom>
-          Programme Not Found
-        </Typography>
-      </Container>
+      <div className="container mx-auto p-4 text-center">
+        Programme not found.
+      </div>
     );
   }
 
   return (
-    <Container sx={{ my: 4 }}>
-      <Typography variant="h3" component="h1" gutterBottom>
-        {programme.isActive ? "Active Programme" : "Inactive Programme"}
-      </Typography>
-      <Typography variant="h4" gutterBottom>
-        {programme.title}
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        {programme.summary}
-      </Typography>
-      <Box mt={4}>
-        <Typography variant="h5" component="h2" gutterBottom>
-          List of Exercises
-        </Typography>
-        <Grid container spacing={3}>
-          {programme.exercises.map((exercise, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Link
-                  to={{
-                    pathname: `/learn/${exercise.name.toLowerCase()}`,
-                    state: { exercise: exercise },
-                  }}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={exercise.imageUrl}
-                    alt={exercise.name}
-                  />
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      {exercise.name}
-                    </Typography>
-                  </CardContent>
-                </Link>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-    </Container>
+    <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
+      <div className="container mx-auto">
+        <h1 className="text-3xl font-bold mb-4">{programme.name}</h1>
+
+        {/* ... (Rest of your Programme Details content) ... */}
+      </div>
+    </div>
   );
 };
 
-export default ProgrammeDetailPage;
+export default ProgrammeDetailsPage;

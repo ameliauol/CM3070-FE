@@ -1,6 +1,4 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import React from "react";
 
 // Placeholder image URLs (replace with your actual images)
 const heroImage = "https://via.placeholder.com/1500x600";
@@ -12,8 +10,6 @@ const contentImage2 = "https://via.placeholder.com/300x200";
 const contentImage3 = "https://via.placeholder.com/300x200";
 
 const Home = () => {
-  const { user } = useContext(AuthContext);
-
   return (
     <div className="bg-slate-900 text-white flex-grow">
       {/* Hero Section */}

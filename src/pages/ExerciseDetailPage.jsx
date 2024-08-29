@@ -28,6 +28,8 @@ ChartJS.register(
 
 const ExerciseDetailPage = () => {
   const { exerciseName } = useParams();
+  const { user } = useContext(AuthContext);
+
   const location = useLocation();
   const [exercise, setExercise] = useState(location.state?.exercise || null);
   const [instructions, setInstructions] = useState([]);
@@ -35,11 +37,12 @@ const ExerciseDetailPage = () => {
   const [error, setError] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const { user } = useContext(AuthContext);
   const [logDate, setLogDate] = useState("");
   const [weightLifted, setWeightLifted] = useState("");
   const [repsCompleted, setRepsCompleted] = useState("");
   const [logFormError, setLogFormError] = useState(null);
+
+  console.log(exercise.video_url);
 
   // TODO: Placeholder data for the graph - replace with actual logged data
   const [historicalData, setHistoricalData] = useState([
@@ -171,22 +174,25 @@ const ExerciseDetailPage = () => {
       <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-4">{exercise.name}</h1>
 
+        {/* Description */}
+        <p className="text-lg mb-8">{exercise.description}</p>
+
         {/* Video */}
-        <div className="aspect-video w-full rounded-lg overflow-hidden mb-6">
+        <div className="w-full rounded-lg overflow-hidden mb-12">
           <iframe
+            width="100%"
+            height="500"
             src={exercise.video_url}
             title={exercise.name}
             allowFullScreen
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            style={{ borderRadius: "8px" }}
           />
         </div>
 
-        {/* Description */}
-        <p className="text-lg mb-6">{exercise.description}</p>
-
         {/* Instructions */}
-        <h2 className="text-2xl font-semibold mb-4">Instructions</h2>
-        <ol className="list-decimal list-inside pl-4">
+        <h2 className="text-2xl font-semibold mb-2">Instructions</h2>
+        <ol className="list-decimal list-inside pl-4 mb-12">
           {instructions.map((instruction) => (
             <li key={instruction.id} className="mb-2">
               {instruction.instruction}

@@ -98,7 +98,13 @@ const ExerciseListingPage = () => {
           {/* Exercise Cards Grid */}
           <div className="md:col-span-3 order-last md:order-first">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredExercises.length > 0 ? (
+              {!filteredExercises ? (
+                exercises.map((exercise) => (
+                  <Link to={`/exercise/${exercise.name}`} state={{ exercise }}>
+                    <ExerciseCard key={exercise.id} exercise={exercise} />
+                  </Link>
+                ))
+              ) : filteredExercises.length > 0 ? (
                 filteredExercises.map((exercise) => (
                   <Link to={`/exercise/${exercise.name}`} state={{ exercise }}>
                     <ExerciseCard key={exercise.id} exercise={exercise} />
