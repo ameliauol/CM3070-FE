@@ -28,6 +28,13 @@ export default {
         custom:
           "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
       },
+      width: {
+        4: "1rem",
+        30: "7.5rem",
+        80: "20rem",
+        100: "25rem",
+        140: "35rem",
+      },
     },
   },
   plugins: [],

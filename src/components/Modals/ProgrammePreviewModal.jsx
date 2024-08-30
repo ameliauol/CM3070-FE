@@ -5,6 +5,7 @@ import {
 } from "../../utils/printingHelpers";
 import programmeExercisesService from "../../services/programmeExercisesService";
 import exerciseService from "../../services/exerciseService";
+import ExerciseCard from "../Cards/ExerciseCard";
 
 const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
   if (!isOpen) return null;
@@ -15,11 +16,21 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
   useEffect(() => {
     const fetchExercisesInProgramme = async () => {
       try {
-        const programmeExercises =
+        let programmeExercises =
           await programmeExercisesService.getExercisesByProgrammeId(
             programme.id
           );
-        console.log(programmeExercises);
+        for (let i = 0; i < programmeExercises.length; i++) {
+          await exerciseService
+            .getExerciseById(programmeExercises[i].exercise_id)
+            .then((response) => {
+              const exercise = response[0];
+              programmeExercises[i].name = exercise.name;
+              programmeExercises[i].description = exercise.description;
+              programmeExercises[i].category = exercise.category;
+              programmeExercises[i].image_url = exercise.image_url;
+            });
+        }
         setExercisesInProgramme(programmeExercises);
       } catch (error) {
         console.error("Error fetching exercises:", error);
@@ -104,14 +115,16 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
               showExercises ? "translate-x-0" : "-translate-x-full"
             }`}
           >
-            <div>
+            <div className="flex flex-col items-center justify-center">
               <h2 className="text-xl font-medium text-white mb-2">
                 Exercises Included:
               </h2>
-              <ul className="text-gray-400 text-base list-disc pl-6 text-left">
+              <ul className="text-gray-400 text-center w-full">
                 {execisesInProgramme &&
                   execisesInProgramme.map((exercise) => (
-                    <li key={exercise.id}>{exercise.exercise_name}</li>
+                    <li key={exercise.id} className="flex justify-center mb-8">
+                      <ExerciseCard exercise={exercise} />
+                    </li>
                   ))}
               </ul>
             </div>
@@ -119,12 +132,21 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
         </div>
 
         {/* Swipe Arrow */}
-        <button
-          onClick={() => handleSwipe(showExercises ? "left" : "right")}
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white rounded-full p-2"
-        >
-          {showExercises ? "<" : ">"}
-        </button>
+        {showExercises ? (
+          <button
+            onClick={() => handleSwipe(showExercises ? "left" : "right")}
+            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white rounded-full p-2"
+          >
+            {"<"}
+          </button>
+        ) : (
+          <button
+            onClick={() => handleSwipe(showExercises ? "left" : "right")}
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 bg-opacity-50 text-white rounded-full p-2"
+          >
+            {">"}
+          </button>
+        )}
 
         <button
           onClick={onClose} // TODO: handle the "Start Program" action (e.g., joinProgramme)

@@ -1,15 +1,20 @@
 import React from "react";
 
 const ExerciseCard = ({ exercise }) => {
-  const { name, category, description, imageUrl } = exercise; // Destructuring
-
+  const { name, category, description, imageUrl } = exercise;
   return (
-    <div className="bg-gray-800 rounded-lg p-4 shadow-md relative">
+    <div
+      className={`bg-gray-800 rounded-lg p-4 shadow-md relative ${
+        exercise.programme_id ? "text-center drop-shadow-xl w-140" : ""
+      }`}
+    >
       {/* Image */}
       <img
         src={imageUrl}
         alt={name}
-        className="w-full h-48 object-cover rounded-lg"
+        className={`w-full object-cover rounded-lg ${
+          exercise.programme_id ? "h-30" : "h-48"
+        }`}
       />
 
       {/* Category Label */}
@@ -23,8 +28,6 @@ const ExerciseCard = ({ exercise }) => {
       <div className="mt-4">
         <h4 className="text-lg font-medium text-white mb-2">{name}</h4>
         <p className="text-gray-400 text-sm line-clamp-3 min-h-16">
-          {" "}
-          {/* Truncate description to 3 lines */}
           {description}
         </p>
       </div>

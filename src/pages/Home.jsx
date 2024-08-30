@@ -1,7 +1,6 @@
 import React from "react";
+import coverImage from "../assets/landing-img.jpg";
 
-// Placeholder image URLs (replace with your actual images)
-const heroImage = "https://via.placeholder.com/1500x600";
 const program1Image = "https://via.placeholder.com/400x300";
 const program2Image = "https://via.placeholder.com/400x300";
 const program3Image = "https://via.placeholder.com/400x300";
@@ -14,18 +13,21 @@ const Home = () => {
     <div className="bg-slate-900 text-white flex-grow">
       {/* Hero Section */}
       <section
-        className="container mx-auto px-6 py-24 text-center bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroImage})` }} // Using inline styles for background image
+        className="container mt-10 mx-auto px-6 py-24 text-center bg-cover bg-center relative h-2/3"
+        style={{ backgroundImage: `url(${coverImage})` }}
       >
-        <div className="bg-black bg-opacity-50 p-8 rounded-lg">
-          {" "}
-          {/* Semi-transparent overlay */}
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+
+        {/* Hero Content */}
+        <div className="relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-8">
             Achieve Your Fitness Goals
           </h1>
           <p className="text-lg mb-12">
             Join Strength Matrix today and unlock your full potential with
-            personalized workouts, expert guidance, and a supportive community.
+            personalized workouts, with step-by-step instructions, and track
+            your progress.
           </p>
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-md">
             Start Now
