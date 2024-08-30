@@ -205,8 +205,6 @@ const ProgrammesPage = () => {
       {showSnackbar && <Snackbar message={snackbarMessage} type="error" />}
 
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Programmes</h1>
-
         {/* Banner Section */}
         <div className="mb-8 relative">
           <div

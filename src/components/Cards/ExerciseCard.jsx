@@ -1,7 +1,7 @@
 import React from "react";
 
 const ExerciseCard = ({ exercise }) => {
-  const { name, category, description, imageUrl } = exercise;
+  const { name, category, description, image_url } = exercise;
   return (
     <div
       className={`bg-gray-800 rounded-lg p-4 shadow-md relative ${
@@ -10,7 +10,7 @@ const ExerciseCard = ({ exercise }) => {
     >
       {/* Image */}
       <img
-        src={imageUrl}
+        src={image_url}
         alt={name}
         className={`w-full object-cover rounded-lg ${
           exercise.programme_id ? "h-30" : "h-48"

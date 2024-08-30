@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import exerciseService from "../services/exerciseService";
 
 const ExerciseListingPage = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [exercises, setExercises] = useState([]);
   const [filteredExercises, setFilteredExercises] = useState([]);
   const [filters, setFilters] = useState({
@@ -14,16 +15,66 @@ const ExerciseListingPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [curatedExercises, setCuratedExercises] = useState([]);
+  const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchEndX, setTouchEndX] = useState(null);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEndX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX && touchEndX) {
+      const difference = touchStartX - touchEndX;
+      if (difference > 50) {
+        setActiveBannerIndex((prevIndex) => (prevIndex + 1) % 3);
+      } else if (difference < -50) {
+        setActiveBannerIndex((prevIndex) => (prevIndex - 1 + 3) % 3);
+      }
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
+
+  const handlePrev = () => {
+    setActiveBannerIndex((prevIndex) => (prevIndex - 1 + 3) % 3);
+  };
+
+  const handleNext = () => {
+    setActiveBannerIndex((prevIndex) => (prevIndex + 1) % 3);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveBannerIndex((prevIndex) => (prevIndex + 1) % 3);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     const fetchExercises = async () => {
+      setIsLoading(true);
       try {
         const data = await exerciseService.getAllExercises();
         setExercises(data);
+
+        for (const exercise of data) {
+          if (
+            ["Bench Press", "Deadlift", "Squats"].indexOf(exercise.name) != -1
+          ) {
+            setCuratedExercises((prev) => [...prev, exercise]);
+          }
+        }
       } catch (error) {
         console.error("Error fetching exercises:", error);
         setSnackbarMessage(
@@ -33,6 +84,8 @@ const ExerciseListingPage = () => {
         setTimeout(() => {
           setShowSnackbar(false);
         }, 3000);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -78,21 +131,61 @@ const ExerciseListingPage = () => {
     });
   };
 
-  //  TODO: Consider adding scrolling list of popular exercises
+  if (isLoading) {
+    return <div className="container mx-auto p-4 text-center">Loading...</div>;
+  }
+
   return (
     <div className="bg-slate-900 text-white flex-grow">
-      {/* Optional scrolling list (commented out for now) */}
-      {/* <div className="container mx-auto py-8 px-6">
-        <h2 className="text-2xl font-semibold mb-4">
-          Popular Exercises
-        </h2>
-        <div className="bg-gray-700 p-4 flex space-x-4 overflow-x-auto">
-        </div>
-      </div> */}
-
       {showSnackbar && <Snackbar message={snackbarMessage} type="error" />}
 
       <div className="container mx-auto py-8 px-6">
+        {/* Banner Section */}
+        <div className="mb-8 relative">
+          <div
+            className="relative min-h-[50vh] rounded-lg overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {curatedExercises.map((item, index) => (
+              <div
+                key={item.id}
+                className="absolute w-full h-full transition-transform duration-500 ease-in-out"
+                style={{
+                  transform: `translateX(${
+                    (index - activeBannerIndex) * 100
+                  }%)`,
+                }}
+              >
+                <img
+                  src={item.image_url}
+                  alt={"Image of " + item.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 py-4 px-6">
+                  <h2 className="text-xl font-bold text-white">{item.name}</h2>
+                  <p className="text-gray-400">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation Buttons */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
+          >
+            {"<"}
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
+          >
+            {">"}
+          </button>
+        </div>
+
         {/* Outer Grid - Search/Filter vs. Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Exercise Cards Grid */}
@@ -105,9 +198,12 @@ const ExerciseListingPage = () => {
                   </Link>
                 ))
               ) : filteredExercises.length > 0 ? (
-                filteredExercises.map((exercise) => (
+                filteredExercises.map((exercise, index) => (
                   <Link to={`/exercise/${exercise.name}`} state={{ exercise }}>
-                    <ExerciseCard key={exercise.id} exercise={exercise} />
+                    <ExerciseCard
+                      key={exercise.id + index}
+                      exercise={exercise}
+                    />
                   </Link>
                 ))
               ) : (

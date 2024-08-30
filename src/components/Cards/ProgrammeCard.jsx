@@ -5,11 +5,12 @@ import {
 } from "../../utils/printingHelpers";
 
 const ProgrammeCard = ({ programme }) => {
+  console.log(programme);
   return (
     <div className="bg-gray-800 rounded-lg p-4 shadow-md">
       {/* Image */}
       <img
-        src={programme.image_url || "https://via.placeholder.com/300x200"}
+        src={`${programme.image_url || "https://via.placeholder.com/300x200"}`}
         alt={programme.name}
         className="w-full h-40 object-cover rounded-lg mb-4"
       />
