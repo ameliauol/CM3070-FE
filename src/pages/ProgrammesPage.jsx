@@ -23,21 +23,6 @@ const ProgrammesPage = () => {
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [selectedProgramme, setSelectedProgramme] = useState(null);
 
-  const bannerData = [
-    {
-      imageUrl: "https://via.placeholder.com/1200x400",
-      title: "Popular Program 1",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/1200x400",
-      title: "Popular Program 2",
-    },
-    {
-      imageUrl: "https://via.placeholder.com/1200x400",
-      title: "Popular Program 3",
-    },
-  ];
-
   const handleOpenPreviewModal = (programme) => {
     setSelectedProgramme(programme);
     setIsPreviewModalOpen(true);
@@ -61,11 +46,11 @@ const ProgrammesPage = () => {
       const difference = touchStartX - touchEndX;
       if (difference > 50) {
         setActiveBannerIndex(
-          (prevIndex) => (prevIndex + 1) % bannerData.length
+          (prevIndex) => (prevIndex + 1) % programmes.length
         );
       } else if (difference < -50) {
         setActiveBannerIndex(
-          (prevIndex) => (prevIndex - 1 + bannerData.length) % bannerData.length
+          (prevIndex) => (prevIndex - 1 + programmes.length) % programmes.length
         );
       }
     }
@@ -75,17 +60,17 @@ const ProgrammesPage = () => {
 
   const handlePrev = () => {
     setActiveBannerIndex(
-      (prevIndex) => (prevIndex - 1 + bannerData.length) % bannerData.length
+      (prevIndex) => (prevIndex - 1 + programmes.length) % programmes.length
     );
   };
 
   const handleNext = () => {
-    setActiveBannerIndex((prevIndex) => (prevIndex + 1) % bannerData.length);
+    setActiveBannerIndex((prevIndex) => (prevIndex + 1) % programmes.length);
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveBannerIndex((prevIndex) => (prevIndex + 1) % bannerData.length);
+      setActiveBannerIndex((prevIndex) => (prevIndex + 1) % programmes.length);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -108,27 +93,34 @@ const ProgrammesPage = () => {
           })
         );
 
-        // Fetch user programmes if user is logged in
         if (user) {
-          const userProgrammes =
-            await userProgrammesService.getUserProgrammesByUserId(user.id);
-          const joinedProgrammeIds = userProgrammes.map(
-            (up) => up.programme_id
-          ); // Extract IDs of joined programmes
+          try {
+            const userProgrammes =
+              await userProgrammesService.getUserProgrammesByUserId(user.id);
+            const joinedProgrammeIds = userProgrammes.map(
+              (up) => up.programme_id
+            );
 
-          // Filter out programmes the user has already joined
-          const filteredProgrammes = programmesWithExercises.filter(
-            (programme) => !joinedProgrammeIds.includes(programme.id)
-          );
+            // Filter out programmes the user has already joined
+            const filteredProgrammes = programmesWithExercises.filter(
+              (programme) => !joinedProgrammeIds.includes(programme.id)
+            );
 
-          setProgrammes(filteredProgrammes);
-          setFilteredProgrammes(filteredProgrammes);
+            setProgrammes(filteredProgrammes);
+            setFilteredProgrammes(filteredProgrammes);
+          } catch (userProgrammeError) {
+            console.error(
+              "User has not joined any programmes: ",
+              userProgrammeError
+            );
+            // don't throw an error here, so the process continues and doesn't show snackbar error
+          }
         } else {
-          // If not logged in, show all programmes
           setProgrammes(programmesWithExercises);
           setFilteredProgrammes(programmesWithExercises);
         }
       } catch (error) {
+        // This catch block handles errors from other parts of the fetching process
         console.error("Error fetching data:", error);
         setSnackbarMessage(error.response?.data?.error || "An error occurred.");
         setShowSnackbar(true);
@@ -213,7 +205,7 @@ const ProgrammesPage = () => {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {bannerData.map((item, index) => (
+            {programmes.map((item, index) => (
               <div
                 key={index}
                 className="absolute w-full h-full transition-transform duration-500 ease-in-out"
@@ -224,12 +216,13 @@ const ProgrammesPage = () => {
                 }}
               >
                 <img
-                  src={item.imageUrl}
-                  alt={item.title}
+                  src={item.image_url}
+                  alt={item.name}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 py-4 px-6">
-                  <h2 className="text-xl font-bold text-white">{item.title}</h2>
+                <div className="absolute text-center bottom-0 left-0 w-full bg-black bg-opacity-50 py-4 px-6">
+                  <h2 className="text-xl font-bold text-white">{item.name}</h2>
+                  <p className="text-gray-400">{item.description}</p>
                 </div>
               </div>
             ))}

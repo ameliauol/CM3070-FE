@@ -25,25 +25,25 @@ const API_ENDPOINTS = {
     GET_BY_PROGRAMME_ID: "/programme/exercises/get/id", // programme ID will be appended
   },
   USER_PROGRAMMES: {
-    GET_ALL: "/user-programmes",
-    GET_BY_ID: "/user-programmes",
-    GET_BY_USER_ID: "/user-programmes/user",
-    JOIN: "/user-programmes/programme",
-    UPDATE: "/user-programmes",
-    DELETE: "/user-programmes",
+    GET_ALL: "/user/programmes/get/all",
+    GET_BY_ID: "/user/programmes/get",
+    GET_BY_USER_ID: "/user/programmes/get/user",
+    JOIN_BY_ID: "/user/programmes/join",
+    UPDATE_BY_ID: "/user/programmes/update",
+    DELETE_BY_ID: "/user/programmes/delete",
   },
   USER_EXERCISES: {
-    GET_ALL: "/user-exercises",
-    GET_BY_USER_PROGRAMME_ID: "/user-exercises/programme", // user programme ID will be appended
-    GET_BY_ID: "/user-exercises",
-    ADD: "/user-exercises/programme", // user programme ID will be appended
-    DELETE: "/user-exercises",
+    GET_ALL: "/user/exercises/get/all",
+    GET_BY_ID: "/user/exercises/get",
+    GET_BY_USER_PROGRAMME_ID: "/user/exercises/get/filter/user-programme", // user programme ID will be appended
+    ADD_BY_USER_PROGRAMME_ID: "/user/exercises/add/new", // user programme ID will be appended
+    DELETE_BY_ID: "/user/exercises/delete",
   },
   EXERCISE_RECORDS: {
-    GET_ALL: "/exercise-records",
-    GET_BY_USER_EXERCISE_ID: "/exercise-records/user-exercise", // user exercise ID will be appended
-    ADD: "/exercise-records/user-exercise", // user exercise ID will be appended
-    DELETE: "/exercise-records",
+    GET_ALL: "/exercise-records/get/all",
+    GET_BY_USER_EXERCISE_ID: "/exercise-records/get/filter/user-exercise", // user exercise ID will be appended
+    ADD: "/exercise-records/add/new", // user exercise ID will be appended
+    DELETE: "/exercise-records/delete",
   },
 };
 

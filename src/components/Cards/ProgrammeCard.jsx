@@ -5,7 +5,6 @@ import {
 } from "../../utils/printingHelpers";
 
 const ProgrammeCard = ({ programme }) => {
-  console.log(programme);
   return (
     <div className="bg-gray-800 rounded-lg p-4 shadow-md">
       {/* Image */}

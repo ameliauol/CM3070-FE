@@ -42,8 +42,6 @@ const ExerciseDetailPage = () => {
   const [repsCompleted, setRepsCompleted] = useState("");
   const [logFormError, setLogFormError] = useState(null);
 
-  console.log(exercise.video_url);
-
   // TODO: Placeholder data for the graph - replace with actual logged data
   const [historicalData, setHistoricalData] = useState([
     { date: "2023-10-20", weight: 60, reps: 10 },

@@ -67,7 +67,7 @@ const Navbar = ({ handleOpenModal }) => {
           onClick={() => (user ? handleLogout() : handleOpenModal("login"))}
         >
           <span className="text-gray-300 hover:text-white px-3 py-2 rounded-3xl">
-            {user ? "Logout" : "Log In"}
+            {user ? "Log Out" : "Log In"}
           </span>
         </button>
       </div>

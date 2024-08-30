@@ -29,6 +29,7 @@ const App = () => {
     <div className="flex flex-col bg-slate-900 text-white min-h-screen">
       <Navbar handleOpenModal={handleOpenModal} />
       <div className="flex-grow">
+        {/* Routes */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/exercises" element={<ExerciseListingPage />} />

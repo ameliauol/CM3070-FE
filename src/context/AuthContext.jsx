@@ -20,7 +20,9 @@ const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await authService.login(userData);
-      setUserToken(response); // Update user token in context
+      setUserToken(response.token); // Update user token in context
+      const userInfo = await authService.getUserInfo(userData.username);
+      setUser(userInfo); // Update user info in context
     } catch (error) {
       console.error("Error logging in:", error);
       return Promise.reject(error);
@@ -39,7 +41,6 @@ const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await authService.register(userData);
-      console.log("Registration successful:", response);
     } catch (error) {
       console.error("Error registering:", error);
       return Promise.reject(error);

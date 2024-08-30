@@ -31,7 +31,6 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
         setShowSnackbar(false);
       }, 10000);
     } catch (error) {
-      console.log(error.response.status);
       if (error.response && error.response.status === 404) {
         setSnackbarMessage(
           "An error has occurred: No account found with that username."

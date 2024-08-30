@@ -20,7 +20,7 @@ const getExerciseRecordsByUserExerciseId = async (userExerciseId) => {
 
 const addExerciseRecord = async (userExerciseId, recordData) => {
   const response = await axios.post(
-    `${API_BASE_URL}${API_ENDPOINTS.EXERCISE_RECORDS.ADD}/${userExerciseId}`,
+    `${API_BASE_URL}${API_ENDPOINTS.EXERCISE_RECORDS.ADD_BY_ID}/${userExerciseId}`,
     recordData,
     { headers: authHeader() }
   );
@@ -29,7 +29,7 @@ const addExerciseRecord = async (userExerciseId, recordData) => {
 
 const deleteExerciseRecord = async (recordId) => {
   const response = await axios.delete(
-    `${API_BASE_URL}${API_ENDPOINTS.EXERCISE_RECORDS.DELETE}/${recordId}`,
+    `${API_BASE_URL}${API_ENDPOINTS.EXERCISE_RECORDS.DELETE_BY_ID}/${recordId}`,
     { headers: authHeader() }
   );
   return response.data;

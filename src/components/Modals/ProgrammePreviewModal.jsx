@@ -99,7 +99,7 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
                 {programme.description}
               </p>
               <p className="text-gray-400 text-sm mt-2">
-                Difficulty:
+                Difficulty:{" "}
                 {printProgrammeDifficultyLevel(programme.difficulty_level)}
                 -friendly
               </p>

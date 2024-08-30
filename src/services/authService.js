@@ -16,8 +16,7 @@ const login = async (userData) => {
     userData
   );
   if (response.data.token) {
-    localStorage.setItem("userToken", JSON.stringify(response.data));
-    await setUserInfo(userData.username);
+    localStorage.setItem("userToken", JSON.stringify(response.data.token));
   }
   return response.data;
 };
@@ -26,10 +25,9 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 
-const setUserInfo = async (username) => {
-  const response = await axios.post(
+const getUserInfo = async (username) => {
+  const response = await axios.get(
     `${API_BASE_URL}${API_ENDPOINTS.USERS.GET_BY_USERNAME}/${username}`,
-    userData,
     { headers: authHeader() }
   );
   if (response.data) {
@@ -47,6 +45,7 @@ const authService = {
   login,
   logout,
   getCurrentUser,
+  getUserInfo,
 };
 
 export default authService;

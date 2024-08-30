@@ -29,7 +29,7 @@ const getUserProgrammesByUserId = async (userId) => {
 const joinProgramme = async (programmeId, activeDays) => {
   // Adjust parameter names if needed
   const response = await axios.post(
-    `${API_BASE_URL}${API_ENDPOINTS.USER_PROGRAMMES.JOIN}/${programmeId}`,
+    `${API_BASE_URL}${API_ENDPOINTS.USER_PROGRAMMES.JOIN_BY_ID}/${programmeId}`,
     { active_days: activeDays },
     { headers: authHeader() }
   );
@@ -38,7 +38,7 @@ const joinProgramme = async (programmeId, activeDays) => {
 
 const updateUserProgramme = async (userProgrammeId, updatedData) => {
   const response = await axios.put(
-    `${API_BASE_URL}${API_ENDPOINTS.USER_PROGRAMMES.UPDATE}/${userProgrammeId}`,
+    `${API_BASE_URL}${API_ENDPOINTS.USER_PROGRAMMES.UPDATE_BY_ID}/${userProgrammeId}`,
     updatedData,
     { headers: authHeader() }
   );
@@ -47,7 +47,7 @@ const updateUserProgramme = async (userProgrammeId, updatedData) => {
 
 const deleteUserProgramme = async (userProgrammeId) => {
   const response = await axios.delete(
-    `${API_BASE_URL}${API_ENDPOINTS.USER_PROGRAMMES.DELETE}/${userProgrammeId}`,
+    `${API_BASE_URL}${API_ENDPOINTS.USER_PROGRAMMES.DELETE_BY_ID}/${userProgrammeId}`,
     { headers: authHeader() }
   );
   return response.data;

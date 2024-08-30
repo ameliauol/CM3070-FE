@@ -57,7 +57,6 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin }) => {
 
     try {
       await register({ name, email, username, password });
-      console.log("Registration successful!");
       setSnackbarMessage(
         "Successfully registered! Redirecting to the login page now."
       );
