@@ -8,7 +8,7 @@ const Snackbar = ({ message, type = "error" }) => {
 
   return (
     <div
-      className={`fixed top-5 left-1/4 w-1/2 px-4 py-3 border rounded-md ${colorClass}`}
+      className={`z-9999 fixed top-5 left-1/4 w-1/2 px-4 py-3 border rounded-md ${colorClass}`}
     >
       <p className="text-sm font-medium text-center">{message}</p>
     </div>

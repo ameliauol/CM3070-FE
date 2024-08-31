@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   getDurationUnit,
   printProgrammeDifficultyLevel,
@@ -6,12 +7,27 @@ import {
 import programmeExercisesService from "../../services/programmeExercisesService";
 import exerciseService from "../../services/exerciseService";
 import ExerciseCard from "../Cards/ExerciseCard";
+import JoinProgrammeModal from "./JoinProgrammeModal";
 
 const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
   if (!isOpen) return null;
 
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
   const [execisesInProgramme, setExercisesInProgramme] = useState([]);
+
+  const handleOpenJoinModal = () => {
+    setIsJoinModalOpen(true);
+  };
+
+  const handleCloseJoinModal = () => {
+    setIsJoinModalOpen(false);
+  };
+
+  const handleJoinSuccess = () => {
+    // TODO: Handle success join programme
+    onClose(); // Close the preview modal
+  };
 
   useEffect(() => {
     const fetchExercisesInProgramme = async () => {
@@ -57,7 +73,7 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 text-center -mb-6">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-md w-1/2 h-2/3 text-white relative max-w-full overflow-y-auto">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-md w-2/3 h-2/3 text-white relative max-w-full overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-200"
@@ -78,13 +94,12 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
           </svg>
         </button>
         {/* Programme Preview Content */}
-        <div className="relative">
+        <div className="relative flex-grow">
           {/* Container for swipe functionality */}
           {/* Programme Details */}
           <div
-            className={`grid grid-cols-1 gap-4 transition-transform duration-300 ease-in-out ${
-              showExercises ? "-translate-x-full" : ""
-            }`}
+            className={`grid grid-cols-1 gap-4 transition-transform duration-300 ease-in-out 
+               ${showExercises ? "-translate-x-full hidden" : ""} `}
           >
             <img
               src={programme.image_url || "https://via.placeholder.com/300x200"}
@@ -112,12 +127,12 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
           {/* Exercise List */}
           <div
             className={`grid grid-cols-1 gap-4 transition-transform duration-300 ease-in-out absolute top-0 left-0 w-full ${
-              showExercises ? "translate-x-0" : "-translate-x-full"
+              showExercises ? "translate-x-0" : "-translate-x-full hidden"
             }`}
           >
             <div className="flex flex-col items-center justify-center">
               <h2 className="text-xl font-medium text-white mb-2">
-                Exercises Included:
+                Exercises Included
               </h2>
               <ul className="text-gray-400 text-center w-full">
                 {execisesInProgramme &&
@@ -148,12 +163,21 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
           </button>
         )}
 
-        <button
-          onClick={onClose} // TODO: handle the "Start Program" action (e.g., joinProgramme)
-          className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          Join Program
-        </button>
+        {!showExercises && (
+          <button
+            onClick={handleOpenJoinModal}
+            className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Join Programme
+          </button>
+        )}
+        {/* Join Programme Modal */}
+        <JoinProgrammeModal
+          isOpen={isJoinModalOpen}
+          onClose={handleCloseJoinModal}
+          programme={programme}
+          onJoinSuccess={handleJoinSuccess}
+        />
       </div>
     </div>
   );

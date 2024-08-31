@@ -19,6 +19,15 @@ export default {
         28: "7rem", // 112px
         30: "7.5rem", // 120px
         35: "8.75rem", // 140px
+        40: "10rem", // 160px
+        45: "11.25rem", // 180px
+        50: "12.5rem", // 200px
+        60: "15rem", // 240px
+        65: "16.25rem", // 260px
+        70: "17.5rem", // 280px
+        80: "20rem", // 320px
+        100: "25rem", // 400px
+        140: "35rem", // 560px
         // ... add more custom rem values as needed
       },
       height: {

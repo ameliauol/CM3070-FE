@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import Modal from "./components/Modal";
 import LoginForm from "./components/Forms/LoginForm";
@@ -9,8 +9,10 @@ import Home from "./pages/Home";
 import ExerciseListingPage from "./pages/ExerciseListingPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import ProgrammesPage from "./pages/ProgrammesPage";
+import { AuthContext } from "./context/AuthContext";
 
 const App = () => {
+  const { user } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
