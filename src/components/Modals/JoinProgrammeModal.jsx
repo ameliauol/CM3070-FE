@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import programmeExercisesService from "../../services/programmeExercisesService";
 import exerciseService from "../../services/exerciseService";
 import userProgrammesService from "../../services/userProgrammesService";
 import userExercisesService from "../../services/userExercisesService";
 import ExerciseCard from "../Cards/ExerciseCard";
 import Snackbar from "../Snackbar";
+import { AuthContext } from "../../context/AuthContext";
 
 const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
+  const { user } = useContext(AuthContext);
   const [selectedDays, setSelectedDays] = useState([]);
   const [currentWeights, setCurrentWeights] = useState({});
   const [goalWeights, setGoalWeights] = useState({});

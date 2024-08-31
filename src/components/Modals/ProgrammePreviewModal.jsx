@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
 import {
   getDurationUnit,
   printProgrammeDifficultyLevel,
@@ -9,10 +8,12 @@ import exerciseService from "../../services/exerciseService";
 import ExerciseCard from "../Cards/ExerciseCard";
 import JoinProgrammeModal from "./JoinProgrammeModal";
 import Snackbar from "../Snackbar";
+import { AuthContext } from "../../context/AuthContext";
 
 const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
   if (!isOpen) return null;
 
+  const { user } = useContext(AuthContext);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
   const [execisesInProgramme, setExercisesInProgramme] = useState([]);
@@ -86,7 +87,7 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 text-center -mb-6">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-md w-2/3 h-2/3 text-white relative max-w-full overflow-y-auto">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-md w-2/3 h-4/5 text-white relative max-w-full overflow-y-auto">
         {showSnackbar && (
           <Snackbar message={snackbarMessage} type={snackbarType} />
         )}
@@ -177,13 +178,37 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
             {">"}
           </button>
         )}
-        {!showExercises && (
+        {!showExercises && user ? (
           <button
             onClick={handleOpenJoinModal}
             className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Join Programme
           </button>
+        ) : (
+          !showExercises &&
+          !user && (
+            // Show locked for unauthenticated users
+            <div className="mt-15 flex items-center justify-center p-6 bg-gray-700 rounded-lg shadow-md">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-gray-500 mr-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              <p className="text-lg text-gray-400">
+                Sign up or log in now to join programmes!
+              </p>
+            </div>
+          )
         )}
         {/* Join Programme Modal */}
         <JoinProgrammeModal
