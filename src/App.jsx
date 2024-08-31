@@ -12,7 +12,6 @@ import ProgrammesPage from "./pages/ProgrammesPage";
 import { AuthContext } from "./context/AuthContext";
 
 const App = () => {
-  const { user } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 

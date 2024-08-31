@@ -8,6 +8,7 @@ import programmeExercisesService from "../../services/programmeExercisesService"
 import exerciseService from "../../services/exerciseService";
 import ExerciseCard from "../Cards/ExerciseCard";
 import JoinProgrammeModal from "./JoinProgrammeModal";
+import Snackbar from "../Snackbar";
 
 const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
   if (!isOpen) return null;
@@ -15,6 +16,9 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
   const [execisesInProgramme, setExercisesInProgramme] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarType, setSnackBarType] = useState("error");
 
   const handleOpenJoinModal = () => {
     setIsJoinModalOpen(true);
@@ -25,7 +29,15 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
   };
 
   const handleJoinSuccess = () => {
-    // TODO: Handle success join programme
+    setSnackbarMessage(
+      "Successfully joined the programme! Let's get fit together!"
+    );
+    setSnackBarType("success");
+    setShowSnackbar(true);
+    setTimeout(() => {
+      setShowSnackbar(false);
+    }, 3000);
+    handleCloseJoinModal();
     onClose(); // Close the preview modal
   };
 
@@ -50,13 +62,14 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
         setExercisesInProgramme(programmeExercises);
       } catch (error) {
         console.error("Error fetching exercises:", error);
-        // setSnackbarMessage(
-        //   "An error occurred while fetching exercises in programme. Please refresh the page or try again later."
-        // );
-        // setShowSnackbar(true);
-        // setTimeout(() => {
-        //   setShowSnackbar(false);
-        // }, 3000);
+        setSnackbarMessage(
+          "An error occurred while fetching exercises in programme. Please refresh the page or try again later."
+        );
+        setSnackBarType("error");
+        setShowSnackbar(true);
+        setTimeout(() => {
+          setShowSnackbar(false);
+        }, 3000);
       }
     };
 
@@ -74,6 +87,9 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 text-center -mb-6">
       <div className="bg-gray-800 p-8 rounded-lg shadow-md w-2/3 h-2/3 text-white relative max-w-full overflow-y-auto">
+        {showSnackbar && (
+          <Snackbar message={snackbarMessage} type={snackbarType} />
+        )}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-200"
@@ -145,7 +161,6 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
             </div>
           </div>
         </div>
-
         {/* Swipe Arrow */}
         {showExercises ? (
           <button
@@ -162,7 +177,6 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
             {">"}
           </button>
         )}
-
         {!showExercises && (
           <button
             onClick={handleOpenJoinModal}

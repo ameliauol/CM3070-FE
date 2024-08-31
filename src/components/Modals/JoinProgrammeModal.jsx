@@ -1,20 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import programmeExercisesService from "../../services/programmeExercisesService";
 import exerciseService from "../../services/exerciseService";
-import { AuthContext } from "../../context/AuthContext";
 import userProgrammesService from "../../services/userProgrammesService";
+import userExercisesService from "../../services/userExercisesService";
 import ExerciseCard from "../Cards/ExerciseCard";
 import Snackbar from "../Snackbar";
 
 const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
-  const { user } = useContext(AuthContext);
   const [selectedDays, setSelectedDays] = useState([]);
   const [currentWeights, setCurrentWeights] = useState({});
   const [goalWeights, setGoalWeights] = useState({});
   const [currentReps, setCurrentReps] = useState({});
   const [goalReps, setGoalReps] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [exercises, setExercises] = useState([]);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -73,15 +70,6 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
   };
 
   const handleSubmit = async () => {
-    if (selectedDays.length === 0) {
-      setSnackbarMessage("Please select at least one day.");
-      setShowSnackbar(true);
-      setTimeout(() => {
-        setShowSnackbar(false);
-      }, 3000);
-      return;
-    }
-
     const hasMissingGoals = exercises.some((exercise) => {
       if (exercise.is_weighted) {
         return !currentWeights[exercise.id] || !goalWeights[exercise.id];
@@ -90,44 +78,79 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
       }
     });
 
-    if (hasMissingGoals) {
-      setError("Please fill in all goal fields.");
+    if (selectedDays.length === 0 && hasMissingGoals) {
+      setSnackbarMessage(
+        "Please select at least one day and fill in all goal fields."
+      );
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
+      return;
+    } else if (selectedDays.length === 0) {
+      setSnackbarMessage("Please select at least one day.");
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
+      return;
+    } else if (hasMissingGoals) {
+      setSnackbarMessage("Please fill in all goal fields.");
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
       return;
     }
 
     try {
-      const allUserProgrammes =
-        await userProgrammesService.getAllUserProgrammes();
-      const totalActiveDays = allUserProgrammes.reduce(
-        (sum, program) => sum + program.active_days.length,
-        0
+      const map = {
+        Mon: "monday",
+        Tue: "tuesday",
+        Wed: "wednesday",
+        Thu: "thursday",
+        Fri: "friday",
+        Sat: "saturday",
+        Sun: "sunday",
+      };
+
+      const activeDays = selectedDays.map((day) => map[day]).join(",");
+
+      const joinRes = await userProgrammesService.joinProgramme(
+        programme.id,
+        activeDays
       );
 
-      if (totalActiveDays + selectedDays.length > 5) {
-        setError("Total active days across all programs cannot exceed 5.");
-        return;
-      }
-
-      if (allUserProgrammes.length === 0 && selectedDays.length > 3) {
-        setError("Your first program can have a maximum of 3 active days.");
-        return;
-      }
-
-      await userProgrammesService.joinProgramme(programme.id, selectedDays);
-
-      // TODO: Call API to save user goals for each exercise
-      // using currentWeights, goalWeights, currentReps, goalReps
+      const addGoalRes = await Promise.all(
+        exercises.map((exercise) => {
+          const userExerciseData = {
+            user_programme_id: joinRes.id,
+            exercise_id: exercise.id,
+            start_weight: currentWeights[exercise.id] || null,
+            goal_weight: goalWeights[exercise.id] || null,
+            start_reps: currentReps[exercise.id] || null,
+            goal_reps: goalReps[exercise.id] || null,
+          };
+          return userExercisesService.addExerciseLogToUserProgramme(
+            user_programme_id,
+            userExerciseData
+          );
+        })
+      );
 
       onJoinSuccess();
-      onClose();
     } catch (error) {
       console.error("Error joining program:", error);
-      setError("Error joining program. Please try again later.");
+      setSnackbarMessage("Error joining program. Please try again later.");
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
     }
   };
 
   const handleOnClose = () => {
-    setError(null);
+    setSnackbarMessage(null);
     onClose();
   };
 
@@ -189,7 +212,6 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
                   )
                 )}
               </div>
-              {error && <p className="text-red-500 text-sm">{error}</p>}
             </div>
             {/* Step 2: Exercise Goal Setting */}
             <div className="transition-transform duration-300 ease-in-out h-full mt-20">
@@ -304,7 +326,6 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
                 ))}
               </div>
             </div>
-            {/* Navigation Buttons (Outside Swipeable Content) */}
             <div className="flex justify-between px-8 py-2 z-10">
               <button
                 onClick={handleOnClose}

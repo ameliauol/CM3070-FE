@@ -18,10 +18,14 @@ const getUserExercisesByUserProgrammeId = async (userProgrammeId) => {
   return response.data;
 };
 
-const addExerciseLogToUserProgramme = async (userProgrammeId) => {
+const addExerciseLogToUserProgramme = async (
+  userProgrammeId,
+  userExerciseData
+) => {
   const response = await axios.post(
     `${API_BASE_URL}${API_ENDPOINTS.USER_EXERCISES.ADD_BY_USER_PROGRAMME_ID}/${userProgrammeId}`,
-    { headers: authHeader() }
+    { headers: authHeader() },
+    userExerciseData
   );
   return response.data;
 };
