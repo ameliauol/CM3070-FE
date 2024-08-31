@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import exerciseService from "../services/exerciseService";
 import exerciseInstructionsService from "../services/exerciseInstructionsService";
+import userProgrammesService from "../services/userProgrammesService";
 import Snackbar from "../components/Snackbar";
 import { AuthContext } from "../context/AuthContext";
 import { Line } from "react-chartjs-2";
@@ -15,6 +16,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import programmeExercisesService from "../services/programmeExercisesService";
+import programmeService from "../services/programmeService";
 
 ChartJS.register(
   CategoryScale,
@@ -41,6 +44,8 @@ const ExerciseDetailPage = () => {
   const [weightLifted, setWeightLifted] = useState("");
   const [repsCompleted, setRepsCompleted] = useState("");
   const [logFormError, setLogFormError] = useState(null);
+  const [selectedProgramme, setSelectedProgramme] = useState("");
+  const [userProgrammes, setUserProgrammes] = useState([]);
 
   // TODO: Placeholder data for the graph - replace with actual logged data
   const [historicalData, setHistoricalData] = useState([
@@ -106,6 +111,59 @@ const ExerciseDetailPage = () => {
 
     fetchExerciseDetails();
   }, [exerciseName, exercise]);
+
+  useEffect(() => {
+    const fetchUserProgrammesWithExercise = async () => {
+      if (user) {
+        try {
+          const allUserProgrammes =
+            await userProgrammesService.getUserProgrammesByUserId(user.id);
+
+          const filteredProgrammes = await Promise.all(
+            allUserProgrammes.map(async (programme) => {
+              const programmeExercises =
+                await programmeExercisesService.getExercisesByProgrammeId(
+                  programme.programme_id
+                );
+              const hasExercise = programmeExercises.some(
+                (ex) => ex.exercise_id === exercise.id
+              );
+              if (hasExercise) {
+                const res = await programmeService.getProgrammeById(
+                  programme.programme_id
+                );
+                return res; // Include the programme if it has the exercise
+              } else {
+                return null; // Exclude the programme
+              }
+            })
+          );
+
+          // Remove null entries from the filteredProgrammes array
+          const finalFilteredProgrammes = filteredProgrammes.filter(
+            (p) => p !== null
+          );
+          setUserProgrammes(finalFilteredProgrammes);
+
+          if (finalFilteredProgrammes.length > 0) {
+            setSelectedProgramme(finalFilteredProgrammes[0].programme_id);
+          }
+          console.log(
+            "User programmes with exercise:",
+            finalFilteredProgrammes
+          );
+        } catch (error) {
+          console.error("Error fetching user programs:", error);
+          setSnackbarMessage(
+            "Error fetching your programs. Please try again later."
+          );
+          setShowSnackbar(true);
+        }
+      }
+    };
+
+    fetchUserProgrammesWithExercise(); // Call the new function
+  }, [user, exercise]);
 
   // Function to handle log form submission
   const handleLogSubmit = (event) => {
@@ -208,6 +266,28 @@ const ExerciseDetailPage = () => {
                 onSubmit={handleLogSubmit}
                 className="bg-gray-800 p-6 rounded-lg"
               >
+                {/* Select Programme */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="programmeSelect"
+                    className="block text-gray-400 text-sm font-medium mb-2"
+                  >
+                    Select Programme:
+                  </label>
+                  <select
+                    id="programmeSelect"
+                    value={selectedProgramme}
+                    onChange={(e) => setSelectedProgramme(e.target.value)}
+                    className="bg-gray-700 text-white border border-gray-600 rounded-md py-2 px-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {userProgrammes.map((programme) => (
+                      <option key={programme.id} value={programme}>
+                        {programme.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Date Input */}
                 <div className="mb-4">
                   <label

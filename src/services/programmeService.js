@@ -12,6 +12,7 @@ const getProgrammeById = async (programmeId) => {
   const response = await axios.get(
     `${API_BASE_URL}${API_ENDPOINTS.PROGRAMMES.GET_BY_ID}/${programmeId}`
   );
+  console.log(response);
   return response.data;
 };
 
