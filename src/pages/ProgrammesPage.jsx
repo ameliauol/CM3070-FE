@@ -154,7 +154,7 @@ const ProgrammesPage = () => {
 
       if (timeFilter) {
         filtered = filtered.filter((programme) => {
-          const estimatedTime = programme.estimatedTime; // Assuming `estimatedTime` is in minutes
+          const estimatedTime = programme.est_duration; // Assuming `estimatedTime` is in minutes
           switch (timeFilter) {
             case "<= 30 mins":
               return estimatedTime <= 30;

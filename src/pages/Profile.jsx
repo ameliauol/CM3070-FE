@@ -1,6 +1,6 @@
 // src/pages/Profile.jsx
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import userProgrammesService from "../services/userProgrammesService";
 import authService from "../services/authService";
@@ -34,6 +34,25 @@ const Profile = () => {
   const [joinedProgrammes, setJoinedProgrammes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const tips = [
+    {
+      title: "Insight Tip 01",
+      info: "Stay consistent with your workouts for optimal results.",
+    },
+    {
+      title: "Insight Tip 02",
+      info: "Remember to stay hydrated throughout the day.",
+    },
+    {
+      title: "Insight Tip 03",
+      info: "Don't forget to stretch before and after your workouts.",
+    },
+    {
+      title: "Insight Tip 04",
+      info: "Ensure you are getting enough sleep to aid recovery.",
+    },
+  ];
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -94,6 +113,7 @@ const Profile = () => {
   return (
     <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
       <div className="container mx-auto">
+        {/* ... (Profile heading and user info) ... */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Profile</h1>
           {profileData && (
@@ -106,39 +126,49 @@ const Profile = () => {
             </div>
           )}
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Left Side Menu */}
           <div className="bg-gray-800 p-4 rounded-md">
             <ul>
               <li className="mb-2">
-                <Link to="/profile" className="text-gray-300 hover:text-white">
+                {/* Use NavLink for active link highlighting */}
+                <NavLink
+                  to="/profile"
+                  className={({ isActive }) =>
+                    `text-gray-300 hover:text-white 
+                    ${isActive ? "font-semibold" : ""}`
+                  }
+                >
                   Dashboard
-                </Link>
+                </NavLink>
               </li>
+              {/* Repeat the NavLink pattern for other menu items */}
               <li className="mb-2">
-                <Link
+                <NavLink
                   to="/my-programmes"
-                  className="text-gray-300 hover:text-white"
+                  className={({ isActive }) =>
+                    `text-gray-300 hover:text-white 
+                    ${isActive ? "font-semibold" : ""}`
+                  }
                 >
                   My Programmes
-                </Link>
+                </NavLink>
               </li>
               <li className="mb-2">
-                <Link
+                <NavLink
                   to="/my-exercises"
                   className="text-gray-300 hover:text-white"
                 >
                   My Exercises
-                </Link>
+                </NavLink>
               </li>
               <li className="mb-2">
-                <Link
+                <NavLink
                   to="/edit-profile"
                   className="text-gray-300 hover:text-white"
                 >
                   Edit Profile
-                </Link>
+                </NavLink>
               </li>
               <li>
                 <button
@@ -182,14 +212,12 @@ const Profile = () => {
 
             {/* Insight Tips - Placeholder */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-gray-800 p-4 rounded-md">
-                <p className="text-sm text-gray-400">Insight Tip 01</p>
-                <p>
-                  {/* Replace with actual tip content */}
-                  Stay consistent with your workouts for optimal results.
-                </p>
-              </div>
-              {/* Repeat for Insight Tip 02 and 03 */}
+              {tips.map((tip, index) => (
+                <div key={index - tip} className="bg-gray-800 p-4 rounded-md">
+                  <p className="text-sm text-gray-400">{tip.title}</p>
+                  <p>{tip.info}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
