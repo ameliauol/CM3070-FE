@@ -9,9 +9,12 @@ import Home from "./pages/Home";
 import ExerciseListingPage from "./pages/ExerciseListingPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import ProgrammesPage from "./pages/ProgrammesPage";
+import Profile from "./pages/Profile";
+
 import { AuthContext } from "./context/AuthContext";
 
 const App = () => {
+  const { user } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
@@ -39,6 +42,7 @@ const App = () => {
             element={<ExerciseDetailPage />}
           />
           <Route path="/programmes" element={<ProgrammesPage />} />
+          {user && <Route path="/profile" element={<Profile />} />}
         </Routes>
         <div className="container mx-auto p-4">
           <Modal

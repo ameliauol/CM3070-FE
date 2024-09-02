@@ -122,23 +122,20 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
         programme.id,
         activeDays
       );
-
-      const addGoalRes = await Promise.all(
-        exercises.map((exercise) => {
-          const userExerciseData = {
-            user_programme_id: joinRes.id,
-            exercise_id: exercise.id,
-            start_weight: currentWeights[exercise.id] || null,
-            goal_weight: goalWeights[exercise.id] || null,
-            start_reps: currentReps[exercise.id] || null,
-            goal_reps: goalReps[exercise.id] || null,
-          };
-          return userExercisesService.addExerciseLogToUserProgramme(
-            user_programme_id,
-            userExerciseData
-          );
-        })
-      );
+      exercises.map(async (exercise) => {
+        console.log(exercise);
+        const userExerciseData = {
+          exercise_id: exercise.id,
+          start_weight: currentWeights[exercise.id] || null,
+          goal_weight: goalWeights[exercise.id] || null,
+          start_reps: currentReps[exercise.id] || null,
+          goal_reps: goalReps[exercise.id] || null,
+        };
+        await userExercisesService.addExerciseLogToUserProgramme(
+          joinRes.id,
+          userExerciseData
+        );
+      });
 
       onJoinSuccess();
     } catch (error) {
