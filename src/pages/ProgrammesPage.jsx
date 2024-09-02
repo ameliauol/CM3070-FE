@@ -6,9 +6,12 @@ import Snackbar from "../components/Snackbar";
 import ProgrammePreviewModal from "../components/Modals/ProgrammePreviewModal";
 import { AuthContext } from "../context/AuthContext";
 import userProgrammesService from "../services/userProgrammesService";
+import MyProgrammes from "./profile/MyProgrammes";
 
 const ProgrammesPage = () => {
   const { user } = useContext(AuthContext);
+  const [viewMode, setViewMode] = useState("all");
+
   const [programmes, setProgrammes] = useState([]);
   const [filteredProgrammes, setFilteredProgrammes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -197,118 +200,158 @@ const ProgrammesPage = () => {
       {showSnackbar && <Snackbar message={snackbarMessage} type="error" />}
 
       <div className="container mx-auto">
-        {/* Banner Section */}
-        <div className="mb-8 relative">
-          <div
-            className="relative min-h-[50vh] rounded-lg overflow-hidden"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {programmes.map((item, index) => (
+        <div className="md:col-span-3 flex justify-start mb-4">
+          {/* All Programmes Button (show only if user is logged in) */}
+          {user && (
+            <button
+              onClick={() => setViewMode("all")}
+              className={`px-4 py-2 rounded-l-md font-medium text-gray-700
+                     ${
+                       viewMode === "all"
+                         ? "bg-gray-800 text-white"
+                         : "bg-gray-600 text-gray-200 opacity-50"
+                     }`}
+            >
+              All Programmes
+            </button>
+          )}
+
+          {/* My Programmes Button (show only if user is logged in) */}
+          {user && (
+            <button
+              onClick={() => setViewMode("my")}
+              className={`px-4 py-2 rounded-r-md font-medium text-gray-700 
+                       ${
+                         viewMode === "my"
+                           ? "bg-gray-800 text-white"
+                           : "bg-gray-600 text-gray-200 opacity-50"
+                       }`}
+            >
+              My Programmes
+            </button>
+          )}
+        </div>
+        {viewMode === "all" ? (
+          <>
+            <div className="mb-8 relative">
               <div
-                key={index}
-                className="absolute w-full h-full transition-transform duration-500 ease-in-out"
-                style={{
-                  transform: `translateX(${
-                    (index - activeBannerIndex) * 100
-                  }%)`,
-                }}
+                className="relative min-h-[50vh] rounded-lg overflow-hidden"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
               >
-                <img
-                  src={item.image_url}
-                  alt={item.name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute text-center bottom-0 left-0 w-full bg-black bg-opacity-50 py-4 px-6">
-                  <h2 className="text-xl font-bold text-white">{item.name}</h2>
-                  <p className="text-gray-400">{item.description}</p>
+                {programmes.map((item, index) => (
+                  <div
+                    key={index}
+                    className="absolute w-full h-full transition-transform duration-500 ease-in-out"
+                    style={{
+                      transform: `translateX(${
+                        (index - activeBannerIndex) * 100
+                      }%)`,
+                    }}
+                  >
+                    <img
+                      src={item.image_url}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute text-center bottom-0 left-0 w-full bg-black bg-opacity-50 py-4 px-6">
+                      <h2 className="text-xl font-bold text-white">
+                        {item.name}
+                      </h2>
+                      <p className="text-gray-400">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Navigation Buttons */}
+              <button
+                onClick={handlePrev}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
+              >
+                {"<"}
+              </button>
+              <button
+                onClick={handleNext}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
+              >
+                {">"}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {/* Programme Cards Grid */}
+              <div className="md:col-span-3">
+                <div className="grid grid-cols-1 gap-4">
+                  {filteredProgrammes.map((programme) => (
+                    <button
+                      key={programme.id}
+                      onClick={() => handleOpenPreviewModal(programme)}
+                    >
+                      <ProgrammeCard programme={programme} />
+                    </button>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
 
-          {/* Navigation Buttons */}
-          <button
-            onClick={handlePrev}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
-          >
-            {"<"}
-          </button>
-          <button
-            onClick={handleNext}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
-          >
-            {">"}
-          </button>
-        </div>
+              {/* Programme Preview Modal */}
+              <ProgrammePreviewModal
+                isOpen={isPreviewModalOpen}
+                onClose={handleClosePreviewModal}
+                programme={selectedProgramme}
+              />
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Programme Cards Grid */}
-          <div className="md:col-span-3">
-            <div className="grid grid-cols-1 gap-4">
-              {filteredProgrammes.map((programme) => (
-                <button
-                  key={programme.id}
-                  onClick={() => handleOpenPreviewModal(programme)}
-                >
-                  <ProgrammeCard programme={programme} />
-                </button>
-              ))}
+              {/* Search and Filters */}
+              <div className="md:col-span-1 bg-gray-800 p-4 rounded-lg">
+                <input
+                  type="text"
+                  placeholder="Search programmes..."
+                  className="bg-gray-700 text-white rounded-md py-2 px-4 w-full mb-4"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-2">
+                    Difficulty Level
+                  </label>
+                  <select
+                    value={difficultyFilter}
+                    onChange={handleDifficultyChange}
+                    className="bg-gray-700 text-white rounded-md py-2 px-4 w-full"
+                  >
+                    <option value="">All</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Estimated Workout Duration
+                  </label>
+                  <select
+                    value={timeFilter}
+                    onChange={handleTimeFilterChange}
+                    className="bg-gray-700 text-white rounded-md py-2 px-4 w-full"
+                  >
+                    <option value="">All</option>
+                    <option value="<= 30 mins">{"<= 30 mins"}</option>
+                    <option value="30 mins - 1 hour">
+                      {"30 mins - 1 hour"}
+                    </option>
+                    <option value="1 hour - 1.5 hours">
+                      {"1 hour - 1.5 hours"}
+                    </option>
+                    <option value="1.5 hours <">{"1.5 hours <"}</option>
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
-
-          {/* Programme Preview Modal */}
-          <ProgrammePreviewModal
-            isOpen={isPreviewModalOpen}
-            onClose={handleClosePreviewModal}
-            programme={selectedProgramme}
-          />
-
-          {/* Search and Filters */}
-          <div className="md:col-span-1 bg-gray-800 p-4 rounded-lg">
-            <input
-              type="text"
-              placeholder="Search programmes..."
-              className="bg-gray-700 text-white rounded-md py-2 px-4 w-full mb-4"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">
-                Difficulty Level
-              </label>
-              <select
-                value={difficultyFilter}
-                onChange={handleDifficultyChange}
-                className="bg-gray-700 text-white rounded-md py-2 px-4 w-full"
-              >
-                <option value="">All</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Estimated Workout Duration
-              </label>
-              <select
-                value={timeFilter}
-                onChange={handleTimeFilterChange}
-                className="bg-gray-700 text-white rounded-md py-2 px-4 w-full"
-              >
-                <option value="">All</option>
-                <option value="<= 30 mins">{"<= 30 mins"}</option>
-                <option value="30 mins - 1 hour">{"30 mins - 1 hour"}</option>
-                <option value="1 hour - 1.5 hours">
-                  {"1 hour - 1.5 hours"}
-                </option>
-                <option value="1.5 hours <">{"1.5 hours <"}</option>
-              </select>
-            </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <MyProgrammes />
+        )}
       </div>
     </div>
   );

@@ -89,22 +89,23 @@ const MyProgrammes = () => {
             userProgrammes.map((programme) => (
               <div
                 key={programme.id}
-                className="bg-gray-800 rounded-lg p-4 shadow-md"
+                className="bg-gray-800 rounded-lg p-4 shadow-md flex items-center justify-between px-8"
               >
-                <h2 className="text-lg font-medium text-white mb-2">
-                  {programme.name}
-                </h2>
-                {/* Display other programme details here  */}
-                <p className="text-gray-400 text-sm">
-                  Active Days: {formattedActiveDays(programme.active_days)}
-                </p>
-
+                <div>
+                  <h2 className="text-lg font-medium text-white mb-2">
+                    {programme.name}
+                  </h2>
+                  {/* Display other programme details here  */}
+                  <p className="text-gray-400 text-sm">
+                    Active Days: {formattedActiveDays(programme.active_days)}
+                  </p>
+                </div>
                 {/* Button to open the LogExerciseModal */}
                 <button
                   onClick={() => handleOpenLogModal(programme)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 >
-                  Log Exercise
+                  Start Programme
                 </button>
               </div>
             ))
