@@ -1,37 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import exerciseService from "../services/exerciseService";
 import exerciseInstructionsService from "../services/exerciseInstructionsService";
-import userProgrammesService from "../services/userProgrammesService";
 import Snackbar from "../components/Snackbar";
-import { AuthContext } from "../context/AuthContext";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import programmeExercisesService from "../services/programmeExercisesService";
-import programmeService from "../services/programmeService";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 const ExerciseDetailPage = () => {
   const { exerciseName } = useParams();
-  const { user } = useContext(AuthContext);
 
   const location = useLocation();
   const [exercise, setExercise] = useState(location.state?.exercise || null);
@@ -40,20 +14,6 @@ const ExerciseDetailPage = () => {
   const [error, setError] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [logDate, setLogDate] = useState("");
-  const [weightLifted, setWeightLifted] = useState("");
-  const [repsCompleted, setRepsCompleted] = useState("");
-  const [logFormError, setLogFormError] = useState(null);
-  const [selectedProgramme, setSelectedProgramme] = useState("");
-  const [userProgrammes, setUserProgrammes] = useState([]);
-
-  // TODO: Placeholder data for the graph - replace with actual logged data
-  const [historicalData, setHistoricalData] = useState([
-    { date: "2023-10-20", weight: 60, reps: 10 },
-    { date: "2023-10-22", weight: 65, reps: 12 },
-    { date: "2023-10-25", weight: 62, reps: 11 },
-    { date: "2023-10-27", weight: 70, reps: 15 },
-  ]);
 
   useEffect(() => {
     const fetchExerciseDetails = async () => {
@@ -112,98 +72,6 @@ const ExerciseDetailPage = () => {
     fetchExerciseDetails();
   }, [exerciseName, exercise]);
 
-  useEffect(() => {
-    const fetchUserProgrammesWithExercise = async () => {
-      if (user) {
-        try {
-          const allUserProgrammes =
-            await userProgrammesService.getUserProgrammesByUserId(user.id);
-
-          const filteredProgrammes = await Promise.all(
-            allUserProgrammes.map(async (programme) => {
-              const programmeExercises =
-                await programmeExercisesService.getExercisesByProgrammeId(
-                  programme.programme_id
-                );
-              const hasExercise = programmeExercises.some(
-                (ex) => ex.exercise_id === exercise.id
-              );
-              if (hasExercise) {
-                const res = await programmeService.getProgrammeById(
-                  programme.programme_id
-                );
-                return res; // Include the programme if it has the exercise
-              } else {
-                return null; // Exclude the programme
-              }
-            })
-          );
-
-          // Remove null entries from the filteredProgrammes array
-          const finalFilteredProgrammes = filteredProgrammes.filter(
-            (p) => p !== null
-          );
-          setUserProgrammes(finalFilteredProgrammes);
-
-          if (finalFilteredProgrammes.length > 0) {
-            setSelectedProgramme(finalFilteredProgrammes[0].programme_id);
-          }
-          console.log(
-            "User programmes with exercise:",
-            finalFilteredProgrammes
-          );
-        } catch (error) {
-          console.error("Error fetching user programs:", error);
-          setSnackbarMessage(
-            "Error fetching your programs. Please try again later."
-          );
-          setShowSnackbar(true);
-        }
-      }
-    };
-
-    fetchUserProgrammesWithExercise(); // Call the new function
-  }, [user, exercise]);
-
-  // Function to handle log form submission
-  const handleLogSubmit = (event) => {
-    event.preventDefault();
-
-    if (!logDate || (!weightLifted && exercise.is_weighted) || !repsCompleted) {
-      setLogFormError("Please fill in all required fields.");
-      return;
-    }
-
-    // TODO: Save log data to your backend (add API call here)
-    // Update historicalData
-    setHistoricalData((prevData) => [
-      ...prevData,
-      { date: logDate, weight: weightLifted, reps: repsCompleted },
-    ]);
-
-    // Clear form fields and error
-    setLogDate("");
-    setWeightLifted("");
-    setRepsCompleted("");
-    setLogFormError(null);
-  };
-
-  // Plot Data for the graph
-  const chartData = {
-    labels: historicalData.map((data) => data.date),
-    datasets: [
-      {
-        label: exercise.is_weighted ? "Weight (kg)" : "Reps Completed",
-        data: exercise.is_weighted
-          ? historicalData.map((data) => data.weight)
-          : historicalData.map((data) => data.reps),
-        fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
-
   if (isLoading) {
     return <div className="container mx-auto p-4 text-center">Loading...</div>;
   }
@@ -255,134 +123,6 @@ const ExerciseDetailPage = () => {
             </li>
           ))}
         </ol>
-
-        {user ? (
-          // Content for logged-in users
-          <>
-            {/* Log Your Progress Form */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Log Your Progress</h2>
-              <form
-                onSubmit={handleLogSubmit}
-                className="bg-gray-800 p-6 rounded-lg"
-              >
-                {/* Select Programme */}
-                <div className="mb-4">
-                  <label
-                    htmlFor="programmeSelect"
-                    className="block text-gray-400 text-sm font-medium mb-2"
-                  >
-                    Select Programme:
-                  </label>
-                  <select
-                    id="programmeSelect"
-                    value={selectedProgramme}
-                    onChange={(e) => setSelectedProgramme(e.target.value)}
-                    className="bg-gray-700 text-white border border-gray-600 rounded-md py-2 px-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    {userProgrammes.map((programme) => (
-                      <option key={programme.id} value={programme}>
-                        {programme.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Date Input */}
-                <div className="mb-4">
-                  <label
-                    htmlFor="logDate"
-                    className="block text-gray-400 text-sm font-medium mb-2"
-                  >
-                    Date:
-                  </label>
-                  <input
-                    type="date"
-                    id="logDate"
-                    className="bg-gray-700 text-white border border-gray-600 rounded-md py-2 px-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={logDate}
-                    onChange={(e) => setLogDate(e.target.value)}
-                  />
-                </div>
-
-                {/* Weight Input (only if is_weighted is true) */}
-                {exercise.is_weighted && (
-                  <div className="mb-4">
-                    <label
-                      htmlFor="weightLifted"
-                      className="block text-gray-400 text-sm font-medium mb-2"
-                    >
-                      Weight Lifted (kg):
-                    </label>
-                    <input
-                      type="number"
-                      id="weightLifted"
-                      className="bg-gray-700 text-white border border-gray-600 rounded-md py-2 px-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={weightLifted}
-                      onChange={(e) => setWeightLifted(e.target.value)}
-                    />
-                  </div>
-                )}
-
-                {/* Reps Input */}
-                <div className="mb-4">
-                  <label
-                    htmlFor="repsCompleted"
-                    className="block text-gray-400 text-sm font-medium mb-2"
-                  >
-                    Reps Completed:
-                  </label>
-                  <input
-                    type="number"
-                    id="repsCompleted"
-                    className="bg-gray-700 text-white border border-gray-600 rounded-md py-2 px-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={repsCompleted}
-                    onChange={(e) => setRepsCompleted(e.target.value)}
-                  />
-                </div>
-
-                {logFormError && (
-                  <p className="text-red-500 text-sm">{logFormError}</p>
-                )}
-
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Log Progress
-                </button>
-              </form>
-            </div>
-
-            {/* Historical Data Graph */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Historical Data</h2>
-              {/* Basic Line chart using react-chartjs-2 */}
-              <Line data={chartData} />
-            </div>
-          </>
-        ) : (
-          // Show locked for unauthenticated users
-          <div className="mt-8 flex items-center justify-center p-6 bg-gray-800 rounded-lg shadow-md">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-gray-500 mr-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-            <p className="text-lg text-gray-400">
-              Sign up now to start logging and tracking your progress!
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
