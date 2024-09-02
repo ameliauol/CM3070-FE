@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import programmeExercisesService from "../../services/programmeExercisesService";
 import exerciseService from "../../services/exerciseService";
 import userProgrammesService from "../../services/userProgrammesService";
 import userExercisesService from "../../services/userExercisesService";
 import ExerciseCard from "../Cards/ExerciseCard";
 import Snackbar from "../Snackbar";
-import { AuthContext } from "../../context/AuthContext";
 
 const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
-  const { user } = useContext(AuthContext);
   const [selectedDays, setSelectedDays] = useState([]);
   const [currentWeights, setCurrentWeights] = useState({});
   const [goalWeights, setGoalWeights] = useState({});
@@ -117,13 +115,14 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
       };
 
       const activeDays = selectedDays.map((day) => map[day]).join(",");
-
+      console.log(activeDays);
       const joinRes = await userProgrammesService.joinProgramme(
         programme.id,
         activeDays
       );
-      exercises.map(async (exercise) => {
-        console.log(exercise);
+      console.log(joinRes);
+
+      for (const exercise of exercises) {
         const userExerciseData = {
           exercise_id: exercise.id,
           start_weight: currentWeights[exercise.id] || null,
@@ -131,11 +130,12 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
           start_reps: currentReps[exercise.id] || null,
           goal_reps: goalReps[exercise.id] || null,
         };
+
         await userExercisesService.addExerciseLogToUserProgramme(
           joinRes.id,
           userExerciseData
         );
-      });
+      }
 
       onJoinSuccess();
     } catch (error) {
