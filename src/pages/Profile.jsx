@@ -17,6 +17,7 @@ import {
 import EditProfile from "./profile/EditProfile";
 import MyExercises from "./profile/MyExercises";
 import MyProgrammes from "./profile/MyProgrammes";
+import Dashboard from "./profile/Dashboard";
 
 ChartJS.register(
   CategoryScale,
@@ -33,54 +34,14 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const [activeSection, setActiveSection] = useState("dashboard");
-  const [profileData, setProfileData] = useState(user);
-  const [joinedProgrammes, setJoinedProgrammes] = useState([]);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarType, setSnackbarType] = useState("error");
-
-  const tips = [
-    {
-      title: "Insight Tip 01",
-      info: "Stay consistent with your workouts for optimal results.",
-    },
-    {
-      title: "Insight Tip 02",
-      info: "Remember to stay hydrated throughout the day.",
-    },
-    {
-      title: "Insight Tip 03",
-      info: "Don't forget to stretch before and after your workouts.",
-    },
-    {
-      title: "Insight Tip 04",
-      info: "Ensure you are getting enough sleep to aid recovery.",
-    },
-  ];
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
-
-  // Placeholder data for the graph
-  const chartData = {
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"],
-    datasets: [
-      {
-        label: "Progress",
-        data: [60, 65, 70, 75, 80], // Placeholder data
-        fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
-
-  // Calculate active days per week
-  const activeDaysPerWeek = joinedProgrammes.reduce((total, programme) => {
-    return total + programme.active_days.length;
-  }, 0);
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
@@ -91,9 +52,9 @@ const Profile = () => {
         {/* ... (Profile heading and user info) ... */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Profile</h1>
-          {profileData && (
+          {user && (
             <div className="bg-slate-800 py-2 px-5 rounded-lg">
-              <p className="text-lg">Welcome, {profileData.name}</p>
+              <p className="text-lg">Welcome, {user.name}</p>
             </div>
           )}
         </div>
@@ -151,7 +112,13 @@ const Profile = () => {
           {/* Right Side Content */}
           <div className="md:col-span-3">
             <div className="md:col-span-3">
-              {activeSection === "dashboard" && <></>}
+              {activeSection === "dashboard" && (
+                <Dashboard
+                  setShowSnackbar={setShowSnackbar}
+                  setSnackbarMessage={setSnackbarMessage}
+                  setSnackbarType={setSnackbarType}
+                />
+              )}
 
               {activeSection === "my-programmes" && <MyProgrammes />}
 

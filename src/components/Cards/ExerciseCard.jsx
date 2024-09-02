@@ -16,20 +16,20 @@ const ExerciseCard = ({ exercise }) => {
           exercise.programme_id ? "h-30" : "h-48"
         }`}
       />
-
       {/* Category Label */}
       {category && (
         <div className="absolute top-4 right-4 bg-slate-900 bg-opacity-50 text-white px-2 py-1 rounded-md text-sm font-medium">
           {category}
         </div>
       )}
-
       {/* Content */}
       <div className="mt-4">
         <h4 className="text-lg font-medium text-white mb-2">{name}</h4>
-        <p className="text-gray-400 text-sm line-clamp-3 min-h-16">
-          {description}
-        </p>
+        {description && (
+          <p className="text-gray-400 text-sm line-clamp-3 min-h-16">
+            {description}
+          </p>
+        )}
       </div>
     </div>
   );
