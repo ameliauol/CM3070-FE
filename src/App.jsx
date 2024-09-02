@@ -10,6 +10,7 @@ import ExerciseListingPage from "./pages/ExerciseListingPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import ProgrammesPage from "./pages/ProgrammesPage";
 import Profile from "./pages/Profile";
+import EditProfile from "./pages/profile/EditProfile";
 
 import { AuthContext } from "./context/AuthContext";
 

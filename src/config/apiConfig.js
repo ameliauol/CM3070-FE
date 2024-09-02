@@ -6,7 +6,7 @@ const API_ENDPOINTS = {
     REGISTER: "/users/register",
     LOGIN: "/users/login",
     GET_BY_USERNAME: "/users/get",
-    UPDATE: "/users/update",
+    UPDATE_BY_USERNAME: "/users/update",
     DELETE: "/users/delete",
   },
   PROGRAMMES: {

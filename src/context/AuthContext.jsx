@@ -49,6 +49,20 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const editProfile = async (currUsername, newUserData) => {
+    setIsLoading(true);
+    try {
+      console.log("newUserData", currUsername, newUserData);
+      const response = await authService.updateUser(currUsername, newUserData);
+      setUser(response);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return Promise.reject(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const contextValue = {
     user,
     userToken,
@@ -56,6 +70,7 @@ const AuthProvider = ({ children }) => {
     login,
     logout,
     register,
+    editProfile,
   };
 
   return (

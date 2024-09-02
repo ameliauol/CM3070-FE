@@ -1,9 +1,9 @@
 // src/pages/Profile.jsx
 import React, { useState, useEffect, useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Outlet } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import userProgrammesService from "../services/userProgrammesService";
-import authService from "../services/authService";
+import Snackbar from "../components/Snackbar";
 import { Line } from "react-chartjs-2"; // Or any other charting library
 import {
   Chart as ChartJS,
@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import EditProfile from "./profile/EditProfile";
 
 ChartJS.register(
   CategoryScale,
@@ -30,10 +31,14 @@ const Profile = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const [activeSection, setActiveSection] = useState("dashboard");
   const [profileData, setProfileData] = useState(user);
   const [joinedProgrammes, setJoinedProgrammes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarType, setSnackbarType] = useState("error");
 
   const tips = [
     {
@@ -112,6 +117,9 @@ const Profile = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
+      {showSnackbar && (
+        <Snackbar message={snackbarMessage} type={snackbarType} />
+      )}
       <div className="container mx-auto">
         {/* ... (Profile heading and user info) ... */}
         <div className="flex items-center justify-between mb-8">
@@ -131,44 +139,40 @@ const Profile = () => {
           <div className="bg-gray-800 p-4 rounded-md">
             <ul>
               <li className="mb-2">
-                {/* Use NavLink for active link highlighting */}
-                <NavLink
-                  to="/profile"
-                  className={({ isActive }) =>
-                    `text-gray-300 hover:text-white 
-                    ${isActive ? "font-semibold" : ""}`
-                  }
+                <button
+                  onClick={() => setActiveSection("dashboard")}
+                  className={`text-gray-300 hover:text-white 
+                 ${activeSection === "dashboard" ? "font-semibold" : ""}`}
                 >
                   Dashboard
-                </NavLink>
+                </button>
               </li>
-              {/* Repeat the NavLink pattern for other menu items */}
               <li className="mb-2">
-                <NavLink
-                  to="/my-programmes"
-                  className={({ isActive }) =>
-                    `text-gray-300 hover:text-white 
-                    ${isActive ? "font-semibold" : ""}`
-                  }
+                <button
+                  onClick={() => setActiveSection("my-programmes")}
+                  className={`text-gray-300 hover:text-white 
+                 ${activeSection === "dashboard" ? "font-semibold" : ""}`}
                 >
                   My Programmes
-                </NavLink>
+                </button>
               </li>
               <li className="mb-2">
-                <NavLink
-                  to="/my-exercises"
-                  className="text-gray-300 hover:text-white"
+                <button
+                  onClick={() => setActiveSection("my-exercises")}
+                  className={`text-gray-300 hover:text-white 
+                 ${activeSection === "dashboard" ? "font-semibold" : ""}`}
                 >
                   My Exercises
-                </NavLink>
+                </button>
               </li>
               <li className="mb-2">
-                <NavLink
-                  to="/edit-profile"
-                  className="text-gray-300 hover:text-white"
+                <button
+                  onClick={() => setActiveSection("edit-profile")}
+                  className={`text-gray-300 hover:text-white 
+                 ${activeSection === "dashboard" ? "font-semibold" : ""}`}
                 >
                   Edit Profile
-                </NavLink>
+                </button>
               </li>
               <li>
                 <button
@@ -183,8 +187,24 @@ const Profile = () => {
 
           {/* Right Side Content */}
           <div className="md:col-span-3">
+            <div className="md:col-span-3">
+              {activeSection === "dashboard" && <></>}
+
+              {activeSection === "my-programmes" && <></>}
+
+              {activeSection === "my-exercises" && <></>}
+
+              {activeSection === "edit-profile" && (
+                <EditProfile
+                  setShowSnackbar={setShowSnackbar}
+                  setSnackbarMessage={setSnackbarMessage}
+                  setSnackbarType={setSnackbarType}
+                />
+              )}
+            </div>
+
             {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               <div className="bg-gray-800 p-4 rounded-md">
                 <p className="text-sm text-gray-400">Programs Started</p>
                 <p className="text-lg font-medium">{joinedProgrammes.length}</p>
@@ -196,13 +216,12 @@ const Profile = () => {
               <div className="bg-gray-800 p-4 rounded-md">
                 <p className="text-sm text-gray-400">Exercises Tried</p>
                 <p className="text-lg font-medium">
-                  {/* Replace with actual count from API */}
-                  15
+                  
                 </p>
-              </div>
+              </div> 
+			  
             </div>
 
-            {/* Graph */}
             <div className="bg-gray-800 p-4 rounded-md mb-8">
               <h2 className="text-lg font-semibold mb-4">
                 Graph of Pinned Exercise Progress
@@ -210,7 +229,6 @@ const Profile = () => {
               <Line data={chartData} />
             </div>
 
-            {/* Insight Tips - Placeholder */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {tips.map((tip, index) => (
                 <div key={index - tip} className="bg-gray-800 p-4 rounded-md">
@@ -219,6 +237,8 @@ const Profile = () => {
                 </div>
               ))}
             </div>
+			*/}
+            {/* <Outlet /> */}
           </div>
         </div>
       </div>

@@ -115,12 +115,10 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
       };
 
       const activeDays = selectedDays.map((day) => map[day]).join(",");
-      console.log(activeDays);
       const joinRes = await userProgrammesService.joinProgramme(
         programme.id,
         activeDays
       );
-      console.log(joinRes);
 
       for (const exercise of exercises) {
         const userExerciseData = {
