@@ -1,10 +1,10 @@
-* User Setup Guide
+# User Setup Guide
 
 Prerequisites:
-- Have NodeJS installed.
-- Have GitHub installed.
-- Have VSCode installed.
-- Have the application's back end hosted locally. It can be found at https://github.com/ameliauol/CM3070-BE .
+* Have NodeJS installed.
+* Have GitHub installed.
+* Have VSCode installed.
+* Have the application's back end hosted locally. It can be found at https://github.com/ameliauol/CM3070-BE .
 
 Steps:
 1. Use "git clone https://github.com/ameliauol/CM3070-FE" to clone the frontend code to your local device.
