@@ -1,7 +1,6 @@
 // src/pages/profile/EditProfile.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import Snackbar from "../../components/Snackbar";
 
 const EditProfile = ({
   setShowSnackbar,

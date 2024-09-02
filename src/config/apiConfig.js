@@ -36,7 +36,9 @@ const API_ENDPOINTS = {
     GET_ALL: "/user/exercises/get/all",
     GET_BY_ID: "/user/exercises/get",
     GET_BY_USER_PROGRAMME_ID: "/user/exercises/get/filter/user-programme", // user programme ID will be appended
+    GET_BY_USER_ID: "/user/exercises/get/filter/user", // user ID will be appended
     ADD_BY_USER_PROGRAMME_ID: "/user/exercises/add/new", // user programme ID will be appended
+    UPDATE_BY_USER_EXERCISE_ID: "/user/exercises/update", // user exercise ID will be appended
     DELETE_BY_ID: "/user/exercises/delete",
   },
   EXERCISE_RECORDS: {

@@ -52,7 +52,6 @@ const AuthProvider = ({ children }) => {
   const editProfile = async (currUsername, newUserData) => {
     setIsLoading(true);
     try {
-      console.log("newUserData", currUsername, newUserData);
       const response = await authService.updateUser(currUsername, newUserData);
       setUser(response);
     } catch (error) {

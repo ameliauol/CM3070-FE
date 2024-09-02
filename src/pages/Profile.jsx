@@ -1,6 +1,5 @@
-// src/pages/Profile.jsx
-import React, { useState, useEffect, useContext } from "react";
-import { NavLink, useNavigate, Outlet } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import userProgrammesService from "../services/userProgrammesService";
 import Snackbar from "../components/Snackbar";
@@ -16,6 +15,7 @@ import {
   Legend,
 } from "chart.js";
 import EditProfile from "./profile/EditProfile";
+import MyExercises from "./profile/MyExercises";
 
 ChartJS.register(
   CategoryScale,
@@ -34,8 +34,6 @@ const Profile = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
   const [profileData, setProfileData] = useState(user);
   const [joinedProgrammes, setJoinedProgrammes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarType, setSnackbarType] = useState("error");
@@ -58,26 +56,6 @@ const Profile = () => {
       info: "Ensure you are getting enough sleep to aid recovery.",
     },
   ];
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      setIsLoading(true);
-      try {
-        const programmesResponse =
-          await userProgrammesService.getUserProgrammesByUserId(user.id);
-        setJoinedProgrammes(programmesResponse);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError("Error fetching data. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchUserData();
-    }
-  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -103,18 +81,6 @@ const Profile = () => {
     return total + programme.active_days.length;
   }, 0);
 
-  if (isLoading) {
-    return <div className="container mx-auto p-4 text-center">Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto p-4 text-center text-red-500">
-        {error}
-      </div>
-    );
-  }
-
   return (
     <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
       {showSnackbar && (
@@ -125,19 +91,15 @@ const Profile = () => {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Profile</h1>
           {profileData && (
-            <div>
-              <p className="text-lg">Hello, {profileData.username}</p>
-              <p className="text-sm text-gray-400">
-                Age: {profileData.age} | Height: {profileData.height} | Current
-                Weight: {profileData.weight}
-              </p>
+            <div className="bg-slate-800 py-2 px-5 rounded-lg">
+              <p className="text-lg">Welcome, {profileData.name}</p>
             </div>
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 md:gap-6 gap-8">
           {/* Left Side Menu */}
           <div className="bg-gray-800 p-4 rounded-md">
-            <ul>
+            <ul className="text-left">
               <li className="mb-2">
                 <button
                   onClick={() => setActiveSection("dashboard")}
@@ -162,7 +124,7 @@ const Profile = () => {
                   className={`text-gray-300 hover:text-white 
                  ${activeSection === "dashboard" ? "font-semibold" : ""}`}
                 >
-                  My Exercises
+                  My Exercise Goals
                 </button>
               </li>
               <li className="mb-2">
@@ -192,7 +154,13 @@ const Profile = () => {
 
               {activeSection === "my-programmes" && <></>}
 
-              {activeSection === "my-exercises" && <></>}
+              {activeSection === "my-exercises" && (
+                <MyExercises
+                  setShowSnackbar={setShowSnackbar}
+                  setSnackbarMessage={setSnackbarMessage}
+                  setSnackbarType={setSnackbarType}
+                />
+              )}
 
               {activeSection === "edit-profile" && (
                 <EditProfile
