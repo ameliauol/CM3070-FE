@@ -16,6 +16,7 @@ import {
 } from "chart.js";
 import EditProfile from "./profile/EditProfile";
 import MyExercises from "./profile/MyExercises";
+import MyProgrammes from "./profile/MyProgrammes";
 
 ChartJS.register(
   CategoryScale,
@@ -152,7 +153,7 @@ const Profile = () => {
             <div className="md:col-span-3">
               {activeSection === "dashboard" && <></>}
 
-              {activeSection === "my-programmes" && <></>}
+              {activeSection === "my-programmes" && <MyProgrammes />}
 
               {activeSection === "my-exercises" && (
                 <MyExercises

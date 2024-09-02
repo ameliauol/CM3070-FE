@@ -42,10 +42,11 @@ const API_ENDPOINTS = {
     DELETE_BY_ID: "/user/exercises/delete",
   },
   EXERCISE_RECORDS: {
-    GET_ALL: "/exercise-records/get/all",
-    GET_BY_USER_EXERCISE_ID: "/exercise-records/get/filter/user-exercise", // user exercise ID will be appended
-    ADD: "/exercise-records/add/new", // user exercise ID will be appended
-    DELETE: "/exercise-records/delete",
+    GET_ALL: "/exercises/records/get/all",
+    GET_BY_USER_EXERCISE_ID: "/exercises/records/get/filter/user-exercise", // user exercise ID will be appended
+    ADD_BY_ID: "/exercises/records/add/new/user-exercise", // user exercise ID will be appended
+    ADD_BY_PROGRAMME_ID: "/exercises/records/add/new/programme", // programme ID will be appended
+    DELETE: "/exercises/records/delete",
   },
 };
 

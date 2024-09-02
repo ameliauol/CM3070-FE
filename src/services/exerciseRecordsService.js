@@ -27,6 +27,15 @@ const addExerciseRecord = async (userExerciseId, recordData) => {
   return response.data;
 };
 
+const addExerciseRecordForProgrammeId = async (programmeId, recordData) => {
+  const response = await axios.post(
+    `${API_BASE_URL}${API_ENDPOINTS.EXERCISE_RECORDS.ADD_BY_PROGRAMME_ID}/${programmeId}`,
+    recordData,
+    { headers: authHeader() }
+  );
+  return response.data;
+};
+
 const deleteExerciseRecord = async (recordId) => {
   const response = await axios.delete(
     `${API_BASE_URL}${API_ENDPOINTS.EXERCISE_RECORDS.DELETE_BY_ID}/${recordId}`,
@@ -38,6 +47,7 @@ const deleteExerciseRecord = async (recordId) => {
 const exerciseRecordsService = {
   getAllExerciseRecords,
   getExerciseRecordsByUserExerciseId,
+  addExerciseRecordForProgrammeId,
   addExerciseRecord,
   deleteExerciseRecord,
 };
