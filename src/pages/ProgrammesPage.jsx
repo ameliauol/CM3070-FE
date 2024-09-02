@@ -109,11 +109,11 @@ const ProgrammesPage = () => {
             setProgrammes(filteredProgrammes);
             setFilteredProgrammes(filteredProgrammes);
           } catch (userProgrammeError) {
-            console.error(
-              "User has not joined any programmes: ",
-              userProgrammeError
-            );
-            // don't throw an error here, so the process continues and doesn't show snackbar error
+            if (userProgrammeError.response?.status === 404) {
+              // User has not joined any programmes
+              setProgrammes(programmesWithExercises);
+              setFilteredProgrammes(programmesWithExercises);
+            }
           }
         } else {
           setProgrammes(programmesWithExercises);
