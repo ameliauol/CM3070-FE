@@ -124,7 +124,7 @@ const MyExerciseCard = ({
       <img
         src={userExerciseLogs.exercise_image}
         alt={userExerciseLogs.exercise_name}
-        className="w-full h-36 object-cover rounded-md mb-4"
+        className="w-full h-80 object-cover rounded-md mb-4"
       />
 
       {/* Expandable Section */}
