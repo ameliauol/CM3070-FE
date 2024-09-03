@@ -86,8 +86,10 @@ const MyProgrammeDetailsPage = () => {
           );
         setExerciseRecords(exerciseRecordsData);
       } catch (error) {
-        console.error("Error fetching programme details:", error);
-        setError("Error fetching programme details. Please try again later.");
+        if (error.response.status !== 404) {
+          console.error("Error fetching programme details:", error);
+          setError("Error fetching programme details. Please try again later.");
+        }
       } finally {
         setIsLoading(false);
       }
