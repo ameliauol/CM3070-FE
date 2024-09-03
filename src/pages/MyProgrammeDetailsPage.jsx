@@ -179,68 +179,71 @@ const MyProgrammeDetailsPage = () => {
 
         <h2 className="text-2xl font-semibold mb-4 mt-20">Exercises Records</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {exercises.map((exercise) => {
-            const exerciseRecordsForExercise =
-              groupedExerciseRecords[exercise.name] || [];
-            const chartData = {
-              labels: exerciseRecordsForExercise.map((record) =>
-                record.date_achieved.slice(0, 10)
-              ),
-              datasets: [
-                {
-                  label: exercise.is_weighted
-                    ? "Weight (kg)"
-                    : "Reps Completed",
-                  data: exercise.is_weighted
-                    ? exerciseRecordsForExercise.map((record) => record.weight)
-                    : exerciseRecordsForExercise.map(
-                        (record) => record.reps_completed
-                      ),
-                  fill: false,
-                  borderColor: "rgb(75, 192, 192)",
-                  tension: 0.1,
-                },
-              ],
-            };
+          {groupedExerciseRecords &&
+            exercises.map((exercise) => {
+              const exerciseRecordsForExercise =
+                groupedExerciseRecords[exercise.name] || [];
+              const chartData = {
+                labels: exerciseRecordsForExercise.map((record) =>
+                  record.date_achieved.slice(0, 10)
+                ),
+                datasets: [
+                  {
+                    label: exercise.is_weighted
+                      ? "Weight (kg)"
+                      : "Reps Completed",
+                    data: exercise.is_weighted
+                      ? exerciseRecordsForExercise.map(
+                          (record) => record.weight
+                        )
+                      : exerciseRecordsForExercise.map(
+                          (record) => record.reps_completed
+                        ),
+                    fill: false,
+                    borderColor: "rgb(75, 192, 192)",
+                    tension: 0.1,
+                  },
+                ],
+              };
 
-            return (
-              <div key={exercise.id} className="bg-gray-800 p-4 rounded-md">
-                <Link
-                  to={`/exercise/${exercise.name}`}
-                  target="_blank"
-                  className="flex items-center"
-                >
-                  <h3 className="text-lg font-medium text-white mb-2">
-                    {exercise.name}
-                  </h3>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 ml-2 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+              return (
+                <div key={exercise.id} className="bg-gray-800 p-4 rounded-md">
+                  <Link
+                    to={`/exercise/${exercise.name}`}
+                    target="_blank"
+                    className="flex items-center"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </Link>
+                    <h3 className="text-lg font-medium text-white mb-2">
+                      {exercise.name}
+                    </h3>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 ml-2 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </Link>
 
-                {/* Display Sets and Reps from programmeExercise */}
-                <p className="text-sm text-gray-400">
-                  Target Sets: {exercise.sets} | Target Reps: {exercise.reps}
-                </p>
+                  {/* Display Sets and Reps from programmeExercise */}
+                  <p className="text-sm text-gray-400">
+                    Target Sets: {exercise.sets} | Target Reps: {exercise.reps}
+                  </p>
 
-                {/* Exercise Data Graph */}
-                <div className="mt-4">
-                  <Line data={chartData} />
+                  {/* Exercise Data Graph */}
+                  <div className="mt-4">
+                    <Line data={chartData} />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </div>
     </div>
