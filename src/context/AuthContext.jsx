@@ -23,6 +23,12 @@ const AuthProvider = ({ children }) => {
       setUserToken(response.token); // Update user token in context
       const userInfo = await authService.getUserInfo(userData.username);
       setUser(userInfo); // Update user info in context
+
+      // Set a timeout for 1 hour (3600000 milliseconds)
+      const logoutTimer = setTimeout(() => {
+        logout();
+      }, 3600000);
+      localStorage.setItem("logoutTimer", logoutTimer);
     } catch (error) {
       console.error("Error logging in:", error);
       return Promise.reject(error);
@@ -35,6 +41,11 @@ const AuthProvider = ({ children }) => {
     authService.logout();
     setUserToken(null);
     setUser(null); // Update user in context
+    const timerId = localStorage.getItem("logoutTimer");
+    if (timerId) {
+      clearTimeout(parseInt(timerId, 10));
+      localStorage.removeItem("logoutTimer");
+    }
   };
 
   const register = async (userData) => {

@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import coverImage from "../assets/landing-img.jpg";
+import programmeService from "../services/programmeService";
 
-const program1Image = "https://via.placeholder.com/400x300";
-const program2Image = "https://via.placeholder.com/400x300";
-const program3Image = "https://via.placeholder.com/400x300";
 const contentImage1 = "https://via.placeholder.com/300x200";
 const contentImage2 = "https://via.placeholder.com/300x200";
 const contentImage3 = "https://via.placeholder.com/300x200";
 
 const Home = () => {
+  const [programmes, setProgrammes] = useState([]);
+
+  useEffect(() => {
+    const fetchProgrammes = async () => {
+      const programmes = await programmeService.getAllProgrammes();
+      setProgrammes(programmes);
+    };
+    fetchProgrammes();
+  }, []);
+
   return (
     <div className="bg-slate-900 text-white flex-grow">
       {/* Hero Section */}
@@ -29,7 +37,10 @@ const Home = () => {
             personalized workouts, with step-by-step instructions, and track
             your progress.
           </p>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-md">
+          <button
+            onClick={() => (window.location.href = "/programmes")}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-md"
+          >
             Start Now
           </button>
         </div>
@@ -94,47 +105,23 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Scrolling List (Placeholder) */}
       <section className="container mx-auto px-6 py-6">
         <div className="md:col-span-1 rounded-lg overflow-hidden">
           <h2 className="text-2xl font-semibold mb-4 px-4 py-3 bg-gray-800">
             Featured Programs
           </h2>
-          <div className="bg-gray-700 p-4 flex space-x-4 overflow-x-auto">
-            {/* Placeholder program items */}
-            <div className="flex-shrink-0 w-64">
-              <img
-                src={program1Image}
-                alt="Program 1"
-                className="rounded-lg mb-3"
-              />
-              <h4 className="text-lg font-medium">Program 1</h4>
-              <p className="text-sm">
-                Lorem ipsum dolor sit amet, consectetur...
-              </p>
-            </div>
-            <div className="flex-shrink-0 w-64">
-              <img
-                src={program2Image}
-                alt="Program 2"
-                className="rounded-lg mb-3"
-              />
-              <h4 className="text-lg font-medium">Program 2</h4>
-              <p className="text-sm">
-                Lorem ipsum dolor sit amet, consectetur...
-              </p>
-            </div>
-            <div className="flex-shrink-0 w-64">
-              <img
-                src={program3Image}
-                alt="Program 3"
-                className="rounded-lg mb-3"
-              />
-              <h4 className="text-lg font-medium">Program 3</h4>
-              <p className="text-sm">
-                Lorem ipsum dolor sit amet, consectetur...
-              </p>
-            </div>
+          <div className="bg-gray-700 p-4 px-10 grid gap-5 grid-flow-col space-x-4 overflow-x-auto">
+            {programmes.map((programme) => (
+              <div key={programme.id} className="flex-shrink-0 w-64 py-6">
+                <img
+                  src={programme.image_url}
+                  alt={programme.name}
+                  className="rounded-lg mb-3"
+                />
+                <h4 className="text-lg font-medium">{programme.name}</h4>
+                <p className="text-sm line-clamp-1">{programme.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
