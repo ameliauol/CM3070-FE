@@ -18,3 +18,10 @@ export const getDurationUnit = (duration) => {
 export const printProgrammeDifficultyLevel = (difficultyLevel) => {
   return difficultyLevel.slice(0, 1).toUpperCase() + difficultyLevel.slice(1);
 };
+
+export const formatActiveDaysRaw = (activeDaysUnformatted) => {
+  return activeDaysUnformatted
+    .split(",")
+    .map((day) => day.trim().charAt(0).toUpperCase() + day.trim().slice(1))
+    .join(", ");
+};

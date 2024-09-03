@@ -77,7 +77,6 @@ const Dashboard = ({
 
         // Find the latest exercise (assuming exerciseRecords are sorted by date_achieved DESC on the backend)
         if (exerciseRecordsData.length > 0) {
-          console.log(exerciseRecordsData);
           setLatestExercise(exerciseRecordsData[0]);
         }
       } catch (error) {

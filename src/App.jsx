@@ -10,7 +10,7 @@ import ExerciseListingPage from "./pages/ExerciseListingPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import ProgrammesPage from "./pages/ProgrammesPage";
 import Profile from "./pages/Profile";
-import EditProfile from "./pages/profile/EditProfile";
+import MyProgrammeDetailsPage from "./pages/MyProgrammeDetailsPage";
 
 import { AuthContext } from "./context/AuthContext";
 
@@ -44,6 +44,12 @@ const App = () => {
           />
           <Route path="/programmes" element={<ProgrammesPage />} />
           {user && <Route path="/profile" element={<Profile />} />}
+          {user && (
+            <Route
+              path="/my-programme/:programmeId"
+              element={<MyProgrammeDetailsPage />}
+            />
+          )}
         </Routes>
         <div className="container mx-auto p-4">
           <Modal

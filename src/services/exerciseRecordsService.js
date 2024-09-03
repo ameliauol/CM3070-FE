@@ -26,6 +26,14 @@ const getExerciseRecordsByUserId = async (userId) => {
   return response.data;
 };
 
+const getExerciseRecordsByProgrammeId = async (programmeId) => {
+  const response = await axios.get(
+    `${API_BASE_URL}${API_ENDPOINTS.EXERCISE_RECORDS.GET_BY_PROGRAMME_ID}/${programmeId}`,
+    { headers: authHeader() }
+  );
+  return response.data;
+};
+
 const addExerciseRecord = async (userExerciseId, recordData) => {
   const response = await axios.post(
     `${API_BASE_URL}${API_ENDPOINTS.EXERCISE_RECORDS.ADD_BY_ID}/${userExerciseId}`,
@@ -56,6 +64,7 @@ const exerciseRecordsService = {
   getAllExerciseRecords,
   getExerciseRecordsByUserExerciseId,
   getExerciseRecordsByUserId,
+  getExerciseRecordsByProgrammeId,
   addExerciseRecordForProgrammeId,
   addExerciseRecord,
   deleteExerciseRecord,

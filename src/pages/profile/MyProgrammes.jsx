@@ -3,9 +3,13 @@ import { AuthContext } from "../../context/AuthContext";
 import userProgrammesService from "../../services/userProgrammesService";
 import LogExercisesModal from "../../components/Modals/LogExercisesModal";
 import Snackbar from "../../components/Snackbar";
+import { useNavigate } from "react-router-dom";
+import { formatActiveDaysRaw } from "../../utils/printingHelpers";
 
 const MyProgrammes = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [userProgrammes, setUserProgrammes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,13 +39,6 @@ const MyProgrammes = () => {
       fetchUserProgrammes();
     }
   }, [user]);
-
-  const formattedActiveDays = (activeDaysUnformatted) => {
-    return activeDaysUnformatted
-      .split(",")
-      .map((day) => day.trim().charAt(0).toUpperCase() + day.trim().slice(1))
-      .join(", ");
-  };
 
   const handleOpenLogModal = (programme) => {
     setSelectedProgramme(programme);
@@ -97,16 +94,28 @@ const MyProgrammes = () => {
                   </h2>
                   {/* Display other programme details here  */}
                   <p className="text-gray-400 text-sm">
-                    Active Days: {formattedActiveDays(programme.active_days)}
+                    Active Days: {formatActiveDaysRaw(programme.active_days)}
                   </p>
                 </div>
-                {/* Button to open the LogExerciseModal */}
-                <button
-                  onClick={() => handleOpenLogModal(programme)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Start Programme
-                </button>
+                {/* Button to open the LogExerciseModal and view programme details */}
+                <div className="grid gap-2 grid-flow-col">
+                  <button
+                    onClick={() => handleOpenLogModal(programme)}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Quick Log
+                  </button>
+                  <button
+                    onClick={() =>
+                      navigate(`/my-programme/${programme.id}`, {
+                        state: { programme },
+                      })
+                    }
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    View Programme
+                  </button>
+                </div>
               </div>
             ))
           )}
