@@ -80,8 +80,10 @@ const Dashboard = ({
           setLatestExercise(exerciseRecordsData[0]);
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError("Error fetching data. Please try again later.");
+        if (error.response.status !== 404) {
+          console.error("Error fetching user data:", error);
+          setError("Error fetching data. Please try again later.");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -152,58 +154,70 @@ const Dashboard = ({
   }
 
   return (
-    <div className="md:col-span-3">
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gray-800 p-4 rounded-md">
-          <p className="text-sm text-gray-400">Programs Started</p>
-          <p className="text-lg font-medium">{joinedProgrammes.length}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-md">
-          <p className="text-sm text-gray-400">Active Days Per Week</p>
-          <p className="text-lg font-medium">{activeDaysPerWeek}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-md">
-          <p className="text-sm text-gray-400">Exercises Tried</p>
-          <p className="text-lg font-medium">{numExercisesTried}</p>
-        </div>
-      </div>
-
-      {/* Graph and Latest Exercise */}
-      <div className="bg-gray-800 p-4 rounded-md mb-8 flex items-center">
-        {/* Graph */}
-        <div className="w-2/3">
-          <h2 className="text-lg font-semibold mb-4">
-            {latestExercise
-              ? `[Latest Exercise Logged] ${latestExercise.exercise_name} Progress`
-              : "No Exercise Logged Yet"}
-          </h2>
-          <Line data={chartData} />
-        </div>
-
-        {/* Latest Exercise Name */}
-        {latestExercise && (
-          <div className="w-1/3 text-center">
-            <ExerciseCard
-              exercise={{
-                name: latestExercise.exercise_name,
-                category: latestExercise.exercise_category,
-                image_url: latestExercise.exercise_image,
-              }}
-            />
+    <div className="container mx-auto">
+      {latestExercise &&
+      joinedProgrammes &&
+      numExercisesTried &&
+      exerciseRecords ? (
+        <div className="md:col-span-3">
+          {/* Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="bg-gray-800 p-4 rounded-md">
+              <p className="text-sm text-gray-400">Programs Started</p>
+              <p className="text-lg font-medium">{joinedProgrammes.length}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-md">
+              <p className="text-sm text-gray-400">Active Days Per Week</p>
+              <p className="text-lg font-medium">{activeDaysPerWeek}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-md">
+              <p className="text-sm text-gray-400">Exercises Tried</p>
+              <p className="text-lg font-medium">{numExercisesTried}</p>
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* Insight Tips - Placeholder */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {tips.map((tip, index) => (
-          <div key={index} className="bg-gray-800 p-4 rounded-md">
-            <p className="text-sm text-gray-400">{tip.title}</p>
-            <p>{tip.info}</p>
+          {/* Graph and Latest Exercise */}
+          <div className="bg-gray-800 p-4 rounded-md mb-8 flex items-center">
+            {/* Graph */}
+            <div className="w-2/3">
+              <h2 className="text-lg font-semibold mb-4">
+                {latestExercise
+                  ? `[Latest Exercise Logged] ${latestExercise.exercise_name} Progress`
+                  : "No Exercise Logged Yet"}
+              </h2>
+              <Line data={chartData} />
+            </div>
+
+            {/* Latest Exercise Name */}
+            {latestExercise && (
+              <div className="w-1/3 text-center">
+                <ExerciseCard
+                  exercise={{
+                    name: latestExercise.exercise_name,
+                    category: latestExercise.exercise_category,
+                    image_url: latestExercise.exercise_image,
+                  }}
+                />
+              </div>
+            )}
           </div>
-        ))}
-      </div>
+
+          {/* Insight Tips - Placeholder */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {tips.map((tip, index) => (
+              <div key={index} className="bg-gray-800 p-4 rounded-md">
+                <p className="text-sm text-gray-400">{tip.title}</p>
+                <p>{tip.info}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="text-center text-gray-400">
+          You have not recorded any exercises data yet :( <br />
+          Get started on a programme to view your progress!
+        </div>
+      )}
     </div>
   );
 };
