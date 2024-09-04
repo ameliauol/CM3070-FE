@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import coverImage from "../assets/landing-img.jpg";
 import programmeService from "../services/programmeService";
 
@@ -7,6 +8,7 @@ const contentImage2 = "https://via.placeholder.com/300x200";
 const contentImage3 = "https://via.placeholder.com/300x200";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [programmes, setProgrammes] = useState([]);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const Home = () => {
             your progress.
           </p>
           <button
-            onClick={() => (window.location.href = "/programmes")}
+            onClick={() => navigate("/programmes")}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-md"
           >
             Start Now
