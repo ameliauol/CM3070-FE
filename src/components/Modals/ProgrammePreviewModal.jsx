@@ -87,7 +87,11 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 text-center -mb-6">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-md w-2/3 h-4/5 text-white relative max-w-full overflow-y-auto">
+      <div
+        className={`bg-gray-800 p-8 rounded-lg shadow-md md:w-2/3 lg:w-2/3 ${
+          showExercises ? "h-2/3" : "h-auto"
+        } text-white relative max-w-full overflow-y-auto`}
+      >
         {showSnackbar && (
           <Snackbar message={snackbarMessage} type={snackbarType} />
         )}
