@@ -25,6 +25,7 @@ const ProgrammesPage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [selectedProgramme, setSelectedProgramme] = useState(null);
+  const [featuredProgrammes, setFeaturedProgrammes] = useState([]);
 
   const handleOpenPreviewModal = (programme) => {
     setSelectedProgramme(programme);
@@ -48,13 +49,9 @@ const ProgrammesPage = () => {
     if (touchStartX && touchEndX) {
       const difference = touchStartX - touchEndX;
       if (difference > 50) {
-        setActiveBannerIndex(
-          (prevIndex) => (prevIndex + 1) % programmes.length
-        );
+        setActiveBannerIndex((prevIndex) => (prevIndex + 1) % 3);
       } else if (difference < -50) {
-        setActiveBannerIndex(
-          (prevIndex) => (prevIndex - 1 + programmes.length) % programmes.length
-        );
+        setActiveBannerIndex((prevIndex) => (prevIndex - 1 + 3) % 3);
       }
     }
     setTouchStartX(null);
@@ -63,17 +60,22 @@ const ProgrammesPage = () => {
 
   const handlePrev = () => {
     setActiveBannerIndex(
-      (prevIndex) => (prevIndex - 1 + programmes.length) % programmes.length
+      (prevIndex) =>
+        (prevIndex - 1 + featuredProgrammes.length) % featuredProgrammes.length
     );
   };
 
   const handleNext = () => {
-    setActiveBannerIndex((prevIndex) => (prevIndex + 1) % programmes.length);
+    setActiveBannerIndex(
+      (prevIndex) => (prevIndex + 1) % featuredProgrammes.length
+    );
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveBannerIndex((prevIndex) => (prevIndex + 1) % programmes.length);
+      setActiveBannerIndex(
+        (prevIndex) => (prevIndex + 1) % featuredProgrammes.length
+      );
     }, 5000);
 
     return () => clearInterval(interval);
@@ -122,6 +124,8 @@ const ProgrammesPage = () => {
           setProgrammes(programmesWithExercises);
           setFilteredProgrammes(programmesWithExercises);
         }
+
+        selectRandomPopularProgrammes(programmesWithExercises);
       } catch (error) {
         // This catch block handles errors from other parts of the fetching process
         console.error("Error fetching data:", error);
@@ -137,6 +141,23 @@ const ProgrammesPage = () => {
 
     fetchProgrammesAndExercises();
   }, [user]);
+
+  function selectRandomPopularProgrammes(programmesArray, numProgrammes = 3) {
+    const result = [];
+    const usedIndexes = new Set();
+
+    while (result.length < numProgrammes) {
+      const randomIndex = Math.floor(Math.random() * programmesArray.length);
+
+      // Ensure the same index isn't picked more than once
+      if (!usedIndexes.has(randomIndex)) {
+        result.push(programmesArray[randomIndex]);
+        usedIndexes.add(randomIndex);
+      }
+    }
+
+    setFeaturedProgrammes(result);
+  }
 
   useEffect(() => {
     const filterProgrammes = () => {
@@ -240,7 +261,7 @@ const ProgrammesPage = () => {
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
               >
-                {programmes.map((item, index) => (
+                {featuredProgrammes.map((item, index) => (
                   <div
                     key={index}
                     className="absolute w-full h-full transition-transform duration-500 ease-in-out"
@@ -268,13 +289,13 @@ const ProgrammesPage = () => {
               {/* Navigation Buttons */}
               <button
                 onClick={handlePrev}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
+                className="z-99 absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
               >
                 {"<"}
               </button>
               <button
                 onClick={handleNext}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
+                className="z-99 absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white rounded-full p-2"
               >
                 {">"}
               </button>
