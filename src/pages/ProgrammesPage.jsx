@@ -23,6 +23,7 @@ const ProgrammesPage = () => {
   const [touchEndX, setTouchEndX] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarType, setSnackbarType] = useState("error");
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [selectedProgramme, setSelectedProgramme] = useState(null);
   const [featuredProgrammes, setFeaturedProgrammes] = useState([]);
@@ -218,7 +219,9 @@ const ProgrammesPage = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
-      {showSnackbar && <Snackbar message={snackbarMessage} type="error" />}
+      {showSnackbar && (
+        <Snackbar message={snackbarMessage} type={snackbarType} />
+      )}
 
       <div className="container mx-auto">
         <div className="md:col-span-3 flex justify-start mb-4">
@@ -371,7 +374,11 @@ const ProgrammesPage = () => {
             </div>
           </>
         ) : (
-          <MyProgrammes />
+          <MyProgrammes
+            setShowSnackbar={setShowSnackbar}
+            setSnackbarMessage={setSnackbarMessage}
+            setSnackbarType={setSnackbarType}
+          />
         )}
       </div>
     </div>

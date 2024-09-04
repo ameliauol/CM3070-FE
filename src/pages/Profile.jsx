@@ -120,7 +120,13 @@ const Profile = () => {
                 />
               )}
 
-              {activeSection === "my-programmes" && <MyProgrammes />}
+              {activeSection === "my-programmes" && (
+                <MyProgrammes
+                  setShowSnackbar={setShowSnackbar}
+                  setSnackbarMessage={setSnackbarMessage}
+                  setSnackbarType={setSnackbarType}
+                />
+              )}
 
               {activeSection === "my-exercises" && (
                 <MyExercises

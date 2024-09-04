@@ -11,10 +11,10 @@ const Navbar = ({ handleOpenModal }) => {
 
   return (
     <nav className="py-4 px-6">
-      <div className="container flex items-center justify-between">
+      <div className="w-full justify-between flex items-center px-10">
         <div className="text-white text-2xl font-bold">Strength Matrix</div>
-        <div className="flex items-center bg-opacity-40 bg-stone-950 shadow-md rounded-3xl px-0.2 py-1.5">
-          <ul className="flex space-x-10 m-0">
+        <div className="flex items-center bg-opacity-40 bg-stone-950 shadow-md rounded-3xl py-1.5">
+          <ul className="flex justify-between px-1">
             <li>
               <NavLink
                 to="/"
@@ -64,11 +64,10 @@ const Navbar = ({ handleOpenModal }) => {
           </ul>
         </div>
         <button
+          className="text-gray-300 hover:text-white px-3rounded-3xl"
           onClick={() => (user ? handleLogout() : handleOpenModal("login"))}
         >
-          <span className="text-gray-300 hover:text-white px-3 py-2 rounded-3xl">
-            {user ? "Log Out" : "Log In"}
-          </span>
+          <span>{user ? "Log Out" : "Log In"}</span>
         </button>
       </div>
     </nav>

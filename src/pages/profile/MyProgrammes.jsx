@@ -2,22 +2,21 @@ import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import userProgrammesService from "../../services/userProgrammesService";
 import LogExercisesModal from "../../components/Modals/LogExercisesModal";
-import Snackbar from "../../components/Snackbar";
 import { useNavigate } from "react-router-dom";
 import { formatActiveDaysRaw } from "../../utils/printingHelpers";
 
-const MyProgrammes = () => {
+const MyProgrammes = ({
+  setShowSnackbar,
+  setSnackbarMessage,
+  setSnackbarType,
+}) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [userProgrammes, setUserProgrammes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [selectedProgramme, setSelectedProgramme] = useState(null);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarType, setSnackbarType] = useState("error");
 
   const fetchUserProgrammes = async () => {
     setIsLoading(true);
@@ -27,8 +26,17 @@ const MyProgrammes = () => {
       );
       setUserProgrammes(programmes);
     } catch (error) {
-      console.error("Error fetching user programmes:", error);
-      setError("Error fetching your programmes. Please try again later.");
+      if (error.response.status !== 404) {
+        console.error("Error fetching user programmes:", error);
+        setSnackbarType("error");
+        setSnackbarMessage(
+          "Error fetching your programmes. Please try again later."
+        );
+        setShowSnackbar(true);
+        setTimeout(() => {
+          setShowSnackbar(false);
+        }, 3000);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -72,9 +80,6 @@ const MyProgrammes = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
-      {showSnackbar && (
-        <Snackbar message={snackbarMessage} type={snackbarType} />
-      )}
       <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-8">My Programmes</h1>
         <div className="grid grid-cols-1 gap-4">
