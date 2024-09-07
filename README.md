@@ -7,7 +7,10 @@ Prerequisites:
 * Have the application's back end hosted locally. It can be found at https://github.com/ameliauol/CM3070-BE .
 
 .env File Requirements:
-REACT_APP_API_BASE_URL=https://cm3070-be.onrender.com
+If you want to use your local DB -> REACT_APP_API_BASE_URL=<your backend url>
+Remember to seed your local DB using the seed file.
+
+If you want to use my hosted DB -> REACT_APP_API_BASE_URL=https://cm3070-be.onrender.com
 
 Steps:
 1. Use "git clone https://github.com/ameliauol/CM3070-FE" to clone the frontend code to your local device.
@@ -16,3 +19,5 @@ Steps:
 4. In VSCode, open a Terminal and perform "npm i".
 5. Then, perform "npm run dev".
 6. Access the StrenghtMatrix web application at http://localhost:5173 , or whichever URL VSCode assigns .
+
+StrengthMatrix is available online at https://strengthmatrix.netlify.app/
