@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import coverImage from "../assets/landing-img.jpg";
+import contentImage1 from "../assets/contentImage1.jpg";
+import contentImage2 from "../assets/contentImage2.jpg";
+import contentImage3 from "../assets/contentImage3.jpg";
 import programmeService from "../services/programmeService";
-
-const contentImage1 = "../assets/contentImage1.jpg";
-const contentImage2 = "../assets/contentImage2.jpg";
-const contentImage3 = "../assets/contentImage3.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
