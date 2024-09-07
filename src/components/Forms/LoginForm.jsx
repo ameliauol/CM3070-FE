@@ -1,16 +1,16 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import Snackbar from "../Snackbar";
 
-const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
+const LoginForm = ({
+  onLoginSuccess,
+  onSwitchToRegister,
+  setSnackbarType,
+  setShowSnackbar,
+  setSnackbarMessage,
+}) => {
   const { login } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarType, setSnackbarType] = useState("error");
-  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,16 +20,16 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
       await login({ username, password });
 
       setSnackbarMessage(
-        "Successfully logged in, redirecting you to the homepage now"
+        "Successfully logged in, redirecting you to the programmes page now"
       );
       setSnackbarType("success");
       setShowSnackbar(true);
-      onLoginSuccess();
-      navigate("/");
 
       setTimeout(() => {
         setShowSnackbar(false);
-      }, 10000);
+      }, 3000);
+
+      onLoginSuccess();
     } catch (error) {
       if (error.response && error.response.status === 404) {
         setSnackbarMessage(
@@ -46,14 +46,14 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister }) => {
       }
       setSnackbarType("error");
       setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
     }
   };
 
   return (
     <div>
-      {showSnackbar && (
-        <Snackbar message={snackbarMessage} type={snackbarType} />
-      )}
       <form onSubmit={handleSubmit} className="w-full max-w-sm">
         <div className="md:flex md:items-center mb-6">
           <div className="md:w-1/3">

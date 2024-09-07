@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Modal from "./components/Modal";
+import Snackbar from "./components/Snackbar"; // Ensure Snackbar is properly imported
 import LoginForm from "./components/Forms/LoginForm";
 import RegistrationForm from "./components/Forms/RegistrationForm";
 import Navbar from "./components/Navbar";
@@ -11,13 +12,17 @@ import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import ProgrammesPage from "./pages/ProgrammesPage";
 import Profile from "./pages/Profile";
 import MyProgrammeDetailsPage from "./pages/MyProgrammeDetailsPage";
-
 import { AuthContext } from "./context/AuthContext";
 
 const App = () => {
+  const navigate = useNavigate();
+
   const { user } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarType, setSnackbarType] = useState("success");
 
   const handleOpenModal = (content) => {
     setIsModalOpen(false);
@@ -25,9 +30,10 @@ const App = () => {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleLoginSuccess = () => {
     setIsModalOpen(false);
     setModalContent(null);
+    navigate("/programmes");
   };
 
   return (
@@ -54,24 +60,34 @@ const App = () => {
         <div className="container mx-auto p-4">
           <Modal
             isOpen={isModalOpen}
-            onClose={handleCloseModal}
+            onClose={() => setIsModalOpen(false)}
             title={modalContent === "login" ? "Log In" : "Sign Up"}
           >
             {modalContent === "login" && (
               <LoginForm
-                onLoginSuccess={handleCloseModal}
+                onLoginSuccess={handleLoginSuccess}
                 onSwitchToRegister={() => handleOpenModal("register")}
+                setShowSnackbar={setShowSnackbar}
+                setSnackbarMessage={setSnackbarMessage}
+                setSnackbarType={setSnackbarType}
               />
             )}
             {modalContent === "register" && (
               <RegistrationForm
-                onRegisterSuccess={handleCloseModal}
                 onSwitchToLogin={() => handleOpenModal("login")}
+                setShowSnackbar={setShowSnackbar}
+                setSnackbarMessage={setSnackbarMessage}
+                setSnackbarType={setSnackbarType}
               />
             )}
           </Modal>
         </div>
       </div>
+
+      {showSnackbar && (
+        <Snackbar message={snackbarMessage} type={snackbarType} />
+      )}
+
       <Footer />
     </div>
   );

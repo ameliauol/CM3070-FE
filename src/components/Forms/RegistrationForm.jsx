@@ -2,7 +2,12 @@ import React, { useState, useContext } from "react";
 import Snackbar from "../Snackbar";
 import { AuthContext } from "../../context/AuthContext";
 
-const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin }) => {
+const RegistrationForm = ({
+  onSwitchToLogin,
+  setShowSnackbar,
+  setSnackbarMessage,
+  setSnackbarType,
+}) => {
   const { register } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -10,9 +15,6 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarType, setSnackbarType] = useState("error");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -63,8 +65,7 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin }) => {
       setSnackbarType("success");
       setShowSnackbar(true);
 
-      onRegisterSuccess();
-      handleOpenModal("login");
+      onSwitchToLogin();
       setTimeout(() => {
         setShowSnackbar(false);
       }, 10000);
@@ -87,9 +88,6 @@ const RegistrationForm = ({ onRegisterSuccess, onSwitchToLogin }) => {
 
   return (
     <div>
-      {showSnackbar && (
-        <Snackbar message={snackbarMessage} type={snackbarType} />
-      )}
       <form onSubmit={handleSubmit} className="w-full max-w-sm">
         {/* Name field */}
         <div className="md:flex md:items-center mb-6">
