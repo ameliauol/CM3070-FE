@@ -73,9 +73,15 @@ const Dashboard = ({
         const exerciseRecordsData =
           await exerciseRecordsService.getExerciseRecordsByUserId(user.id);
         exerciseRecordsData.sort((a, b) => {
-          return new Date(b.date_achieved) - new Date(a.date_achieved);
+          return new Date(a.date_achieved) - new Date(b.date_achieved);
         });
-        setExerciseRecords(exerciseRecordsData);
+        // Filter exercise records to include only the most recent record by name
+        const filteredExerciseRecords = exerciseRecordsData.filter(
+          (record) =>
+            record.exercise_name === exerciseRecordsData[0].exercise_name
+        );
+
+        setExerciseRecords(filteredExerciseRecords);
 
         // Find the latest exercise (assuming exerciseRecords are sorted by date_achieved DESC on the backend)
         if (exerciseRecordsData.length > 0) {
