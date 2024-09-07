@@ -24,10 +24,10 @@ const AuthProvider = ({ children }) => {
       const userInfo = await authService.getUserInfo(userData.username);
       setUser(userInfo); // Update user info in context
 
-      // Set a timeout for 1 hour (3600000 milliseconds)
+      // Set a timeout for 24 hours (3600000 milliseconds * 24)
       const logoutTimer = setTimeout(() => {
         logout();
-      }, 3600000);
+      }, 3600000 * 24);
       localStorage.setItem("logoutTimer", logoutTimer);
     } catch (error) {
       console.error("Error logging in:", error);
