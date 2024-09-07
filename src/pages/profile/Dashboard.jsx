@@ -1,4 +1,3 @@
-// src/pages/profile/Dashboard.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import userProgrammesService from "../../services/userProgrammesService";

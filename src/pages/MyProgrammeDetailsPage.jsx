@@ -1,4 +1,3 @@
-// src/pages/profile/MyProgrammeDetailsPage.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import programmeService from "../services/programmeService";
