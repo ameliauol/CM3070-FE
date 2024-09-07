@@ -89,7 +89,10 @@ const LogExercisesModal = ({ isOpen, onClose, programmeId, onLogSuccess }) => {
 
     if (
       Object.values(loggedExercises).some((exerciseLog) => {
-        return exerciseLog.repsCompleted < 0 || exerciseLog.setsCompleted < 0;
+        return (
+          parseInt(exerciseLog.repsCompleted) < 0 ||
+          parseInt(exerciseLog.setsCompleted) < 0
+        );
       })
     ) {
       throwSnackbarError("Reps and sets completed must be positive numbers.");
@@ -98,7 +101,7 @@ const LogExercisesModal = ({ isOpen, onClose, programmeId, onLogSuccess }) => {
 
     if (
       Object.values(loggedExercises).some((exerciseLog) => {
-        return exerciseLog.weight < 0;
+        return exerciseLog.weight != null && parseInt(exerciseLog.weight) < 0;
       })
     ) {
       throwSnackbarError("Weight must be a positive number.");
@@ -207,6 +210,7 @@ const LogExercisesModal = ({ isOpen, onClose, programmeId, onLogSuccess }) => {
                         handleInputChange(e, exercise.id, "weight")
                       }
                       className="bg-gray-700 text-white border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                      required
                     />
                   </div>
                 )}
