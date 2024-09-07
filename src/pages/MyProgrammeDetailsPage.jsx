@@ -22,6 +22,8 @@ import {
   getDurationUnit,
   formatActiveDaysRaw,
 } from "../utils/printingHelpers";
+import LogExercisesModal from "../components/Modals/LogExercisesModal";
+import Snackbar from "../components/Snackbar";
 
 ChartJS.register(
   CategoryScale,
@@ -43,61 +45,10 @@ const MyProgrammeDetailsPage = () => {
   const [exercises, setExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchProgrammeDetails = async () => {
-      setIsLoading(true);
-      try {
-        if (!programme) {
-          const programmeData = await programmeService.getProgrammeById(
-            programmeId
-          );
-          setProgramme(programmeData);
-        }
-        const programmeExercisesData =
-          await programmeExercisesService.getExercisesByProgrammeId(
-            programmeId
-          );
-        const exercisesData = await Promise.all(
-          programmeExercisesData.map((pe) =>
-            exerciseService.getExerciseById(pe.exercise_id)
-          )
-        );
-        const combinedExercises = exercisesData
-          .flat()
-          .map((exercise) => {
-            // Find matching programmeExercisesData based on exercise_id
-            const matchingProgrammeExercises = programmeExercisesData.filter(
-              (pe) => pe.exercise_id === exercise.id
-            );
-
-            // Create an array of flat objects by mapping over the matchingProgrammeExercises
-            return matchingProgrammeExercises.map((programmeExercise) => ({
-              ...exercise, // Include all exercise data
-              ...programmeExercise, // Spread programmeExercise properties into the same object
-            }));
-          })
-          .flat();
-        setExercises(combinedExercises);
-        const exerciseRecordsData =
-          await exerciseRecordsService.getExerciseRecordsByProgrammeId(
-            programmeId
-          );
-        setExerciseRecords(exerciseRecordsData);
-      } catch (error) {
-        if (error.response.status !== 404) {
-          console.error("Error fetching programme details:", error);
-          setError("Error fetching programme details. Please try again later.");
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchProgrammeDetails();
-    }
-  }, [programmeId, user, programme]);
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarType, setSnackbarType] = useState("success");
 
   const activeDaysPerWeek = programme.active_days.split(",").length;
 
@@ -109,6 +60,78 @@ const MyProgrammeDetailsPage = () => {
     acc[record.exercise_name].push(record);
     return acc;
   }, {});
+
+  const fetchProgrammeDetails = async () => {
+    setIsLoading(true);
+    try {
+      if (!programme) {
+        const programmeData = await programmeService.getProgrammeById(
+          programmeId
+        );
+        setProgramme(programmeData);
+      }
+      const programmeExercisesData =
+        await programmeExercisesService.getExercisesByProgrammeId(programmeId);
+      const exercisesData = await Promise.all(
+        programmeExercisesData.map((pe) =>
+          exerciseService.getExerciseById(pe.exercise_id)
+        )
+      );
+      const combinedExercises = exercisesData
+        .flat()
+        .map((exercise) => {
+          // Find matching programmeExercisesData based on exercise_id
+          const matchingProgrammeExercises = programmeExercisesData.filter(
+            (pe) => pe.exercise_id === exercise.id
+          );
+
+          // Create an array of flat objects by mapping over the matchingProgrammeExercises
+          return matchingProgrammeExercises.map((programmeExercise) => ({
+            ...exercise, // Include all exercise data
+            ...programmeExercise, // Spread programmeExercise properties into the same object
+          }));
+        })
+        .flat();
+      setExercises(combinedExercises);
+      const exerciseRecordsData =
+        await exerciseRecordsService.getExerciseRecordsByProgrammeId(
+          programmeId
+        );
+      setExerciseRecords(exerciseRecordsData);
+    } catch (error) {
+      if (error.response.status !== 404) {
+        console.error("Error fetching programme details:", error);
+        setError("Error fetching programme details. Please try again later.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchProgrammeDetails();
+    }
+  }, [programmeId, user, programme]);
+
+  const handleOpenLogModal = () => {
+    setIsLogModalOpen(true);
+  };
+
+  const handleCloseLogModal = () => {
+    setIsLogModalOpen(false);
+  };
+
+  const handleLogSuccess = () => {
+    fetchProgrammeDetails();
+
+    setSnackbarType("success");
+    setSnackbarMessage("Successfully logged exercise records!");
+    setShowSnackbar(true);
+    setTimeout(() => {
+      setShowSnackbar(false);
+    }, 3000);
+  };
 
   if (isLoading) {
     return <div className="container mx-auto p-4 text-center">Loading...</div>;
@@ -133,6 +156,9 @@ const MyProgrammeDetailsPage = () => {
   return (
     <div className="bg-gray-900 text-white min-h-screen flex-grow p-4">
       <div className="container mx-auto">
+        {showSnackbar && (
+          <Snackbar message={snackbarMessage} type={snackbarType} />
+        )}
         <div className="relative h-[50vh] rounded-lg overflow-hidden">
           <img
             src={programme.image_url}
@@ -147,20 +173,29 @@ const MyProgrammeDetailsPage = () => {
         </div>
 
         {/* Programme Settings */}
-        <div className="bg-gray-800 p-4 rounded-md mb-8">
-          <h2 className="text-xl font-semibold mb-4">Program Settings</h2>
-          <p className="text-gray-400">
-            Days/week: {activeDaysPerWeek} (
-            {formatActiveDaysRaw(programme.active_days)})
-          </p>
-          <p className="text-gray-400">
-            Program Duration:{" "}
-            {programme ? getDurationUnit(programme.est_duration) : ""}
-          </p>
-          <p className="text-gray-400">
-            Difficult Level:{" "}
-            {printProgrammeDifficultyLevel(programme.difficulty_level)}-friendly
-          </p>
+        <div className="bg-gray-800 p-4 rounded-md mb-8 grid grid-flow-col">
+          <div className="col-span-5">
+            <h2 className="text-xl font-semibold mb-4">Program Settings</h2>
+            <p className="text-gray-400">
+              Days/week: {activeDaysPerWeek} (
+              {formatActiveDaysRaw(programme.active_days)})
+            </p>
+            <p className="text-gray-400">
+              Program Duration:{" "}
+              {programme ? getDurationUnit(programme.est_duration) : ""}
+            </p>
+            <p className="text-gray-400">
+              Difficult Level:{" "}
+              {printProgrammeDifficultyLevel(programme.difficulty_level)}
+              -friendly
+            </p>
+          </div>
+          <button
+            onClick={() => handleOpenLogModal(programme)}
+            className="col-span-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 rounded focus:outline-none focus:shadow-outline"
+          >
+            Quick Log
+          </button>
         </div>
         {/* Exercises Section */}
         <h2 className="text-2xl font-semibold mb-4 mt-20">Exercises</h2>
@@ -246,6 +281,12 @@ const MyProgrammeDetailsPage = () => {
               );
             })}
         </div>
+        <LogExercisesModal
+          isOpen={isLogModalOpen}
+          onClose={handleCloseLogModal}
+          programmeId={programme.id}
+          onLogSuccess={handleLogSuccess}
+        />
       </div>
     </div>
   );
