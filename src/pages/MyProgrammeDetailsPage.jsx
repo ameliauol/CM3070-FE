@@ -219,6 +219,9 @@ const MyProgrammeDetailsPage = () => {
             exercises.map((exercise) => {
               const exerciseRecordsForExercise =
                 groupedExerciseRecords[exercise.name] || [];
+              exerciseRecordsForExercise.sort(
+                (a, b) => new Date(a.date_achieved) - new Date(b.date_achieved)
+              );
               const chartData = {
                 labels: exerciseRecordsForExercise.map((record) =>
                   record.date_achieved.slice(0, 10)

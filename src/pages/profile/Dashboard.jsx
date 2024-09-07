@@ -72,6 +72,8 @@ const Dashboard = ({
         // Fetch all exercise records for the user
         const exerciseRecordsData =
           await exerciseRecordsService.getExerciseRecordsByUserId(user.id);
+        console.log(exerciseRecordsData);
+        exerciseRecordsData.reverse();
         setExerciseRecords(exerciseRecordsData);
 
         // Find the latest exercise (assuming exerciseRecords are sorted by date_achieved DESC on the backend)
