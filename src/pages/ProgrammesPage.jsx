@@ -36,6 +36,7 @@ const ProgrammesPage = () => {
   const handleClosePreviewModal = () => {
     setIsPreviewModalOpen(false);
     setSelectedProgramme(null);
+    fetchProgrammesAndExercises();
   };
 
   const handleTouchStart = (e) => {
@@ -82,64 +83,64 @@ const ProgrammesPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const fetchProgrammesAndExercises = async () => {
-      setIsLoading(true);
-      try {
-        const programmesData = await programmeService.getAllProgrammes();
-        const exercisePromises = programmesData.map((programme) =>
-          programmeExercisesService.getExercisesByProgrammeId(programme.id)
-        );
-        const exercisesResults = await Promise.all(exercisePromises);
+  const fetchProgrammesAndExercises = async () => {
+    setIsLoading(true);
+    try {
+      const programmesData = await programmeService.getAllProgrammes();
+      const exercisePromises = programmesData.map((programme) =>
+        programmeExercisesService.getExercisesByProgrammeId(programme.id)
+      );
+      const exercisesResults = await Promise.all(exercisePromises);
 
-        const programmesWithExercises = programmesData.map(
-          (programme, index) => ({
-            ...programme,
-            exercises: exercisesResults[index],
-          })
-        );
+      const programmesWithExercises = programmesData.map(
+        (programme, index) => ({
+          ...programme,
+          exercises: exercisesResults[index],
+        })
+      );
 
-        if (user) {
-          try {
-            const userProgrammes =
-              await userProgrammesService.getUserProgrammesByUserId(user.id);
-            const joinedProgrammeIds = userProgrammes.map(
-              (up) => up.programme_id
-            );
+      if (user) {
+        try {
+          const userProgrammes =
+            await userProgrammesService.getUserProgrammesByUserId(user.id);
+          const joinedProgrammeIds = userProgrammes.map(
+            (up) => up.programme_id
+          );
 
-            // Filter out programmes the user has already joined
-            const filteredProgrammes = programmesWithExercises.filter(
-              (programme) => !joinedProgrammeIds.includes(programme.id)
-            );
+          // Filter out programmes the user has already joined
+          const filteredProgrammes = programmesWithExercises.filter(
+            (programme) => !joinedProgrammeIds.includes(programme.id)
+          );
 
-            setProgrammes(filteredProgrammes);
-            setFilteredProgrammes(filteredProgrammes);
-          } catch (userProgrammeError) {
-            if (userProgrammeError.response?.status === 404) {
-              // User has not joined any programmes
-              setProgrammes(programmesWithExercises);
-              setFilteredProgrammes(programmesWithExercises);
-            }
+          setProgrammes(filteredProgrammes);
+          setFilteredProgrammes(filteredProgrammes);
+        } catch (userProgrammeError) {
+          if (userProgrammeError.response?.status === 404) {
+            // User has not joined any programmes
+            setProgrammes(programmesWithExercises);
+            setFilteredProgrammes(programmesWithExercises);
           }
-        } else {
-          setProgrammes(programmesWithExercises);
-          setFilteredProgrammes(programmesWithExercises);
         }
-
-        selectRandomPopularProgrammes(programmesWithExercises);
-      } catch (error) {
-        // This catch block handles errors from other parts of the fetching process
-        console.error("Error fetching data:", error);
-        setSnackbarMessage(error.response?.data?.error || "An error occurred.");
-        setShowSnackbar(true);
-        setTimeout(() => {
-          setShowSnackbar(false);
-        }, 3000);
-      } finally {
-        setIsLoading(false);
+      } else {
+        setProgrammes(programmesWithExercises);
+        setFilteredProgrammes(programmesWithExercises);
       }
-    };
 
+      selectRandomPopularProgrammes(programmesWithExercises);
+    } catch (error) {
+      // This catch block handles errors from other parts of the fetching process
+      console.error("Error fetching data:", error);
+      setSnackbarMessage(error.response?.data?.error || "An error occurred.");
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProgrammesAndExercises();
   }, [user]);
 
@@ -324,6 +325,9 @@ const ProgrammesPage = () => {
                 isOpen={isPreviewModalOpen}
                 onClose={handleClosePreviewModal}
                 programme={selectedProgramme}
+                setShowSnackbar={setShowSnackbar}
+                setSnackbarMessage={setSnackbarMessage}
+                setSnackbarType={setSnackbarType}
               />
 
               {/* Search and Filters */}

@@ -7,20 +7,22 @@ import programmeExercisesService from "../../services/programmeExercisesService"
 import exerciseService from "../../services/exerciseService";
 import ExerciseCard from "../Cards/ExerciseCard";
 import JoinProgrammeModal from "./JoinProgrammeModal";
-import Snackbar from "../Snackbar";
 import { AuthContext } from "../../context/AuthContext";
 
-const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
+const ProgrammePreviewModal = ({
+  isOpen,
+  onClose,
+  programme,
+  setShowSnackbar,
+  setSnackbarMessage,
+  setSnackbarType,
+}) => {
   if (!isOpen) return null;
 
   const { user } = useContext(AuthContext);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
   const [execisesInProgramme, setExercisesInProgramme] = useState([]);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarType, setSnackBarType] = useState("error");
-
   const handleOpenJoinModal = () => {
     setIsJoinModalOpen(true);
   };
@@ -33,7 +35,7 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
     setSnackbarMessage(
       "Successfully joined the programme! Let's get fit together!"
     );
-    setSnackBarType("success");
+    setSnackbarType("success");
     setShowSnackbar(true);
     setTimeout(() => {
       setShowSnackbar(false);
@@ -66,7 +68,7 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
         setSnackbarMessage(
           "An error occurred while fetching exercises in programme. Please refresh the page or try again later."
         );
-        setSnackBarType("error");
+        setSnackbarType("error");
         setShowSnackbar(true);
         setTimeout(() => {
           setShowSnackbar(false);
@@ -92,9 +94,6 @@ const ProgrammePreviewModal = ({ isOpen, onClose, programme }) => {
           showExercises ? "h-2/3" : "h-auto"
         } text-white relative max-w-full overflow-y-auto`}
       >
-        {showSnackbar && (
-          <Snackbar message={snackbarMessage} type={snackbarType} />
-        )}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-200"

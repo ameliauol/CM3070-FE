@@ -1,12 +1,26 @@
-import { React, useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { React, useContext, useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import Snackbar from "./Snackbar";
 
 const Navbar = ({ handleOpenModal }) => {
+  const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarType, setSnackbarType] = useState("success");
 
   const handleLogout = () => {
     logout();
+    setShowSnackbar(true);
+    setSnackbarMessage(
+      "Successfully logged out, navigating back to home page..."
+    );
+    setSnackbarType("success");
+    setTimeout(() => {
+      setShowSnackbar(false);
+      navigate("/");
+    }, 3000);
   };
 
   return (
@@ -70,6 +84,9 @@ const Navbar = ({ handleOpenModal }) => {
           <span>{user ? "Log Out" : "Log In"}</span>
         </button>
       </div>
+      {showSnackbar && (
+        <Snackbar message={snackbarMessage} type={snackbarType} />
+      )}
     </nav>
   );
 };
