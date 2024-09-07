@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import coverImage from "../assets/landing-img.jpg";
 import programmeService from "../services/programmeService";
 
-const contentImage1 = "https://via.placeholder.com/300x200";
-const contentImage2 = "https://via.placeholder.com/300x200";
-const contentImage3 = "https://via.placeholder.com/300x200";
+const contentImage1 = "../assets/contentImage1.jpg";
+const contentImage2 = "../assets/contentImage2.jpg";
+const contentImage3 = "../assets/contentImage3.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -61,12 +61,10 @@ const Home = () => {
                 className="rounded-lg mb-4 w-full"
               />
               <h3 className="text-xl font-semibold mb-4">
-                Unleash Your Potential
+                Beginner Workouts: Master the Basics of Barbell Training
               </h3>
               <p className="text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                facilisi. Sed euismod, nisl nec ultricies elementum, nunc leo
-                feugiat arcu, eu vulputate lacus sapien vitae ligula.
+                Kickstart your fitness journey with Strength Matrix, where novices can thrive! Our platform offers comprehensive beginner programs that teach the essentials of barbell exercises like deadlifts, squats, and presses. Learn proper form and techniques to safely build your strength. Choose from a variety of programs tailored to different body parts, ensuring balanced muscle growth. Whether you're aiming to strengthen your core, legs, or arms, find the perfect routine to boost your fitness confidence and see tangible results.
               </p>
             </div>
 
@@ -78,12 +76,10 @@ const Home = () => {
                 className="rounded-lg mb-4 w-full"
               />
               <h3 className="text-xl font-semibold mb-4">
-                Expert Guidance, Every Step of the Way
+                Advanced Training: Push Your Limits with Intensive Workouts
               </h3>
               <p className="text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                facilisi. Sed euismod, nisl nec ultricies elementum, nunc leo
-                feugiat arcu, eu vulputate lacus sapien vitae ligula.
+                Take your fitness to the next level with Strength Matrix! Our platform caters to experienced gym enthusiasts looking to intensify their workouts. Dive into our expertly crafted programs designed to optimize strength gains and complement your dietary and hydration efforts. Challenge yourself with a range of intensive exercises and advanced training techniques that ensure you get the most out of every session. It's time to maximize your potential and achieve peak performance with routines that push the boundaries of conventional training.
               </p>
             </div>
 
@@ -95,12 +91,10 @@ const Home = () => {
                 className="rounded-lg mb-4 w-full"
               />
               <h3 className="text-xl font-semibold mb-4">
-                Track Your Journey, Celebrate Your Success
+                Physiotherapy for Seniors: Preventing Falls and Building Strength
               </h3>
               <p className="text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                facilisi. Sed euismod, nisl nec ultricies elementum, nunc leo
-                feugiat arcu, eu vulputate lacus sapien vitae ligula.
+                Explore physiotherapy exercises on Strength Matrix, specifically designed for older adults. These exercises focus on strengthening muscles, enhancing balance, and increasing mobility, which are crucial for preventing common accidents like slips and falls. By engaging in these routines, elderly users can improve their physical stability and maintain their independence. Start your journey towards a safer, more active lifestyle today with our specialized workouts.
               </p>
             </div>
           </div>
