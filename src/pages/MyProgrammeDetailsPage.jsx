@@ -147,12 +147,14 @@ const MyProgrammeDetailsPage = () => {
       }
       await userProgrammesService.deleteUserProgramme(programmeId);
       setSnackbarType("success");
-      setSnackbarMessage("Successfully quit the programme!");
+      setSnackbarMessage(
+        "Successfully quit the programme, directing you to your previous page!"
+      );
       setShowSnackbar(true);
       setTimeout(() => {
         setShowSnackbar(false);
+        navigate(-1);
       }, 3000);
-      navigate(-1);
     } catch (error) {
       console.error("Error quitting programme:", error);
       setSnackbarType("error");
