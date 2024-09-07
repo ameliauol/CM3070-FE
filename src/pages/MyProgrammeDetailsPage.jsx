@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useLocation, Link } from "react-router-dom";
+import { useParams, useLocation, Link, useNavigate } from "react-router-dom";
 import programmeService from "../services/programmeService";
 import programmeExercisesService from "../services/programmeExercisesService";
 import exerciseService from "../services/exerciseService";
@@ -24,6 +24,7 @@ import {
 } from "../utils/printingHelpers";
 import LogExercisesModal from "../components/Modals/LogExercisesModal";
 import Snackbar from "../components/Snackbar";
+import userProgrammesService from "../services/userProgrammesService";
 
 ChartJS.register(
   CategoryScale,
@@ -36,6 +37,8 @@ ChartJS.register(
 );
 
 const MyProgrammeDetailsPage = () => {
+  const navigate = useNavigate();
+
   const { programmeId } = useParams();
   const { user } = useContext(AuthContext);
   const location = useLocation();
@@ -131,6 +134,36 @@ const MyProgrammeDetailsPage = () => {
     setTimeout(() => {
       setShowSnackbar(false);
     }, 3000);
+  };
+
+  const handleQuitProgramme = async () => {
+    try {
+      const confirmQuit = window.confirm(
+        "Are you sure you want to quit the programme? This action cannot be undone."
+      );
+
+      if (!confirmQuit) {
+        return;
+      }
+      await userProgrammesService.deleteUserProgramme(programmeId);
+      setSnackbarType("success");
+      setSnackbarMessage("Successfully quit the programme!");
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
+      navigate(-1);
+    } catch (error) {
+      console.error("Error quitting programme:", error);
+      setSnackbarType("error");
+      setSnackbarMessage(
+        "Error quitting the programme. Please try again later."
+      );
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
+    }
   };
 
   if (isLoading) {
@@ -284,6 +317,12 @@ const MyProgrammeDetailsPage = () => {
               );
             })}
         </div>
+        <button
+          onClick={handleQuitProgramme}
+          className="w-full py-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-8"
+        >
+          Quit Programme
+        </button>
         <LogExercisesModal
           isOpen={isLogModalOpen}
           onClose={handleCloseLogModal}
