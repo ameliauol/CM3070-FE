@@ -78,6 +78,14 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
       }
     });
 
+    const hasNegativeNumber = exercises.some((exercise) => {
+      if (exercise.is_weighted) {
+        return currentWeights[exercise.id] < 0 || goalWeights[exercise.id] < 0;
+      } else {
+        return currentReps[exercise.id] < 0 || goalReps[exercise.id] < 0;
+      }
+    });
+
     if (selectedDays.length === 0 && hasMissingGoals) {
       setSnackbarMessage(
         "Please select at least one day and fill in all goal fields."
@@ -96,6 +104,22 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
       return;
     } else if (hasMissingGoals) {
       setSnackbarMessage("Please fill in all goal fields.");
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
+      return;
+    } else if (hasNegativeNumber) {
+      setSnackbarMessage("Please enter a positive number for all fields.");
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
+      return;
+    } else if (selectedDays.length > 5) {
+      setSnackbarMessage(
+        "You can only have a maximum of 5 active days across all programs."
+      );
       setShowSnackbar(true);
       setTimeout(() => {
         setShowSnackbar(false);
@@ -129,6 +153,15 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
           goal_reps: goalReps[exercise.id] || null,
         };
 
+        if (
+          !userExerciseData.start_weight &&
+          !userExerciseData.goal_weight &&
+          !userExerciseData.start_reps &&
+          !userExerciseData.goal_reps
+        ) {
+          continue;
+        }
+
         await userExercisesService.addExerciseLogToUserProgramme(
           joinRes.id,
           userExerciseData
@@ -137,8 +170,9 @@ const JoinProgrammeModal = ({ isOpen, onClose, programme, onJoinSuccess }) => {
 
       onJoinSuccess();
     } catch (error) {
-      console.error("Error joining program:", error);
-      setSnackbarMessage("Error joining program. Please try again later.");
+      setSnackbarMessage(
+        `Error joining program: ${error.response.data.message}`
+      );
       setShowSnackbar(true);
       setTimeout(() => {
         setShowSnackbar(false);
